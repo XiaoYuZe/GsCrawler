@@ -1,5 +1,5 @@
 # coding=gbk
-
+import PackageTool
 import sys
 from template.UpdateJob import UpdateJob
 from HebeiFirefoxSearcher import HebeiFirefoxSearcher
