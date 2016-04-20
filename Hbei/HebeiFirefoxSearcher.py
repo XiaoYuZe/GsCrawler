@@ -747,7 +747,7 @@ if __name__ == '__main__':
     #
     # if searcher.build_driver() == 0:
     #     searcher.search(u"河北隆西石膏有限公司", u'石家庄市桥西区世纪缘食品商行')
-    name_list = [u"迁西县警安消防器材有限公司"]
+    name_list = [u"石家庄金利丰商贸有限公司"]
     searcher = HebeiFirefoxSearcher()
     searcher.set_config()
     for name in name_list:
