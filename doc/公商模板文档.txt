@@ -1,0 +1,112 @@
+1、python版本 2.7.11
+2、依赖包 selenium、PILLOW、pyodbc（用pip install应该都可以装好）
+
+225
+
+SERVER=115.28.63.225;
+DATABASE=pachong;
+UID=likai;
+PWD=LiKai0129
+table：GsSrc
+
+数据库客户端：navicat for sql server
+
+
+pip install pyodbc
+
+程序设计：
+	
+	Searcher 查询器（基类）
+		主要方法：
+		
+		配置查询器xpath、验证码插件参数
+		def set_config(self):
+		
+		# 初始化浏览器
+    def build_driver(self):
+		
+		输入代码进行查询
+		def search(self, code):
+		
+		
+	FirefoxSearcher 基于火狐的浏览器的查询器（Searcher的子类）
+	NingxiaFirefoxSearcher 宁夏省基于火狐的浏览器的查询器（FirefoxSearcher的子类）
+
+
+	需要实现接口：
+		1、继承FirefoxSearcher，创建Searcher class，文件名和类名：NingxiaFirefoxSearcher.py、NingxiaFirefoxSearcher
+		1、创建验证码插件bat文件，放到ocr文件夹下。py文件参考宁夏，exe文件参考辽宁
+		2、需实现方法：
+		
+		
+		#配置xpath、验证码插件
+		def set_config(self):
+        pass
+		
+    # 下载登记信息
+    def load_dengji(self):
+        pass
+
+    # 下载备案信息
+    def load_beian(self):
+        pass
+
+    # 下载动产抵押登记信息
+    def load_dongchandiyadengji(self):
+        pass
+
+    # 下载股权出质登记信息
+    def load_guquanchuzhidengji(self):
+        pass
+
+    # 下载行政处罚信息
+    def load_xingzhengchufa(self):
+        pass
+
+    # 下载经营异常信息
+    def load_jingyingyichang(self):
+        pass
+
+    # 下载严重违法信息
+    def load_yanzhongweifa(self):
+        pass
+
+    # 下载抽查检查信息
+    def load_chouchajiancha(self):
+        pass
+
+    # 下载基本信息
+    def load_jiben(self, table_element):
+        pass
+
+    # 下载股东信息
+    def load_gudong(self, table_element):
+        pass
+
+    # 下载变更信息
+    def load_biangeng(self, table_element):
+        pass
+
+    # 下载主要人员信息
+    def load_zhuyaorenyuan(self, table_element):
+        pass
+
+    # 下载分支机构信息
+    def load_fenzhijigou(self, table_element):
+        pass
+
+    # 下载清算信息
+    def load_qingsuan(self):
+        pass
+		
+		
+	工具类：
+		TableTemplate，各表对应实例已配置好，存放到Tables.py中，使用方法参考宁夏。
+		目前下面两个方法只会打印生成好的sql代码，并不会真正执行。请将生成好的代码放到数据库客户端自行测试。
+		# 删除历史数据，code为机构登记证号，字符型
+		def delete_from_database(self, code):
+		
+		#插入更新数据，基本信息表values为dict型，其余表为list型
+		def insert_into_database(self, code, values):
+
+		

@@ -1,0 +1,18 @@
+表名：ProcessStatus （目前所在数据库为115.28.63.225/pachong）
+字段：
+* [processID] --进程id，系统生成
+* [processName] --进程名称，自定义
+* [processStatus] --进程状态{0：健康，1：死亡，4：IP被封，9：过期}
+* [startTime] --进程开始时间,请使用服务器本地事件
+* [lastUpdateTime] --进程状态最后上报时间，请使用数据库时间（getDate()）
+* [totalUpdateCnt] --进程抓取总数
+* [host] --服务器IP
+  [hostType] -- 预留字段
+  [processIdentity] --进程唯一标识，数据库自增
+  [takeoverIdentity] --进程失败后接管其任务的进程标识，如果不需要此字段请忽略。
+
+中控台逻辑：
+一分半以内如果抓取总数未发生变化，将更换IP，并重启进程。
+如果进程状态显示为4，将更换IP，并重启进程。
+
+所以各位开发程序的时候，如果需要中控台监控的，请在程序抓取的过程中通过ProcessStatus表实时向中控台汇报进程状态，其中有 "*" 标识的字段为必填。

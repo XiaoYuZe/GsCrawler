@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="gbk"?>
+
+<configuration>
+
+  <table>
+  	<desc>基本信息</desc>
+  	<name>Registered_Info</name>
+  	<by>desc</by>
+  	<step>0</step>
+  	<waitInSeconds>30</waitInSeconds>
+    <column desc="统一社会信用代码/注册号">RegistrationNo</column>
+    <column desc="名称">EnterpriseName</column>
+    <column desc="省份">Province</column>
+    <column desc="法定代表人">LegalRepresentative</column>
+    <column desc="类型">EnterpriseType</column>
+    <column desc="成立日期">EstablishmentDate</column>
+    <column desc="注册资本">RegisteredCapital</column>
+    <column desc="住所">ResidenceAddress</column>
+    <column desc="营业期限自">ValidityFrom</column>
+    <column desc="营业期限至">ValidityTo</column>
+    <column desc="经营期限自">ValidityFrom</column>
+    <column desc="经营期限至">ValidityTo</column>
+    <column desc="经营范围">BusinessScope</column>
+    <column desc="登记机关">RegistrationInstitution</column>
+    <column desc="核准日期">ApprovalDate</column>
+    <column desc="登记状态">RegistrationStatus</column>
+    <column desc="负责人">principal</column>
+    <column desc="营业场所">businessPlace</column>
+    <column desc="吊销日期">RevocationDate</column>
+    <column desc="投资人">investor</column>
+    <column desc="执行事务合伙人">ExecutivePartner</column>
+    <column desc="主要经营场所">MianBusinessPlace</column>
+    <column desc="合伙期限自">PartnershipFrom</column>
+    <column desc="合伙期限至">PartnershipTo</column>
+  </table>
+  
+	<table>
+		<desc>股东信息</desc>
+		<name>Shareholder_Info</name>
+		<by>idx</by>
+		<colNums>5</colNums>
+		<subColNums>8</subColNums>
+		<step>1</step>
+		<nextStep>3</nextStep>
+		<waitInSeconds>30</waitInSeconds>
+    <column idx="0">Shareholder_Type</column>
+    <column idx="1">Shareholder_Name</column>
+    <column idx="2">Shareholder_CertificationType</column>
+    <column idx="3">Shareholder_CertificationNo</column>
+    <column idx="4">detail</column>
+    <subColumn idx="0">Subscripted_Capital</subColumn>
+    <subColumn idx="1">Subscripted_Method</subColumn>
+    <subColumn idx="2">Subscripted_Amount</subColumn>
+    <subColumn idx="3">Subscripted_Time</subColumn>
+    <subColumn idx="4">ActualPaid_Capital</subColumn>
+    <subColumn idx="5">ActualPaid_Method</subColumn>
+    <subColumn idx="6">ActualPaid_Amount</subColumn>
+    <subColumn idx="7">ActualPaid_Time</subColumn>
+  </table>
+
+	<table>
+		<desc>出资人信息</desc>
+		<name>DIC_Info</name>
+		<by>idx</by>
+		<colNums>5</colNums>
+		<step>2</step>
+		<waitInSeconds>30</waitInSeconds>
+    <column idx="0">DIC_No</column>
+    <column idx="1">DIC_SponsorType</column>
+    <column idx="2">DIC_SponsorName</column>
+    <column idx="3">DIC_IDType</column>
+    <column idx="4">DIC_IDNo</column>
+  </table>
+
+	<table>
+		<desc>变更信息</desc>
+		<name>Changed_Announcement</name>
+		<by>idx</by>
+		<colNums>4</colNums>
+		<step>3</step>
+		<waitInSeconds>2</waitInSeconds>
+    <column idx="0">ChangedAnnouncement_Events</column>
+    <column idx="1">ChangedAnnouncement_Before</column>
+    <column idx="2">ChangedAnnouncement_After</column>
+    <column idx="3">ChangedAnnouncement_Date</column>
+  </table>
+  
+  <table>
+  	<desc>主要人员信息</desc>
+		<name>KeyPerson_Info</name>
+		<by>idx</by>
+		<colNums>3</colNums>
+		<step>4</step>
+		<waitInSeconds>30</waitInSeconds>
+  	<js>rMethod('gs_ba'),changeStyle('gs_tabs',this)</js>
+    <column idx="0">KeyPerson_No</column>
+    <column idx="1">KeyPerson_Name</column>
+    <column idx="2">KeyPerson_Position</column>
+    <column idx="3">KeyPerson_No</column>
+    <column idx="4">KeyPerson_Name</column>
+    <column idx="5">KeyPerson_Position</column>
+  </table>
+  
+  <table>
+  	<desc>分支机构信息</desc>
+		<name>Branches</name>
+		<by>idx</by>
+		<colNums>4</colNums>
+		<step>5</step>
+		<waitInSeconds>1</waitInSeconds>
+    <column idx="0">Branch_No</column>
+    <column idx="regno">Branch_RegistrationNo</column>
+    <column idx="brname">Branch_RegistrationName</column>
+    <column idx="3">Branch_RegistrationInstitution</column>
+  </table>
+  
+  <table>
+  	<desc>清算信息</desc>
+		<name>liquidation_Information</name>
+		<by>idx</by>
+		<colNums>2</colNums>
+		<step>6</step>
+		<waitInSeconds>1</waitInSeconds>
+    <column idx="0">liquidation_PIC</column>
+    <column idx="1">liquidation_Member</column>
+  </table>
+ 
+  <table>
+  	<desc>动产抵押登记信息</desc>
+		<name>Chattel_Mortgage</name>
+		<by>idx</by>
+		<colNums>8</colNums>
+		<step>7</step>
+		<waitInSeconds>1</waitInSeconds>
+  	<js>rMethod('gs_dy'),changeStyle('gs_tabs',this)</js>
+    <column idx="0">ChattelMortgage_No</column>
+    <column idx="1">ChattelMortgage_RegistrationNo</column>
+    <column idx="2">ChattelMortgage_RegistrationDate</column>
+    <column idx="3">ChattelMortgage_RegistrationInstitution</column>
+    <column idx="4">ChattelMortgage_GuaranteedAmount</column>
+    <column idx="5">ChattelMortgage_Status</column>
+    <column idx="6">ChattelMortgage_AnnounceDate</column>
+    <column idx="7">ChattelMortgage_Details</column>
+  </table>
+  
+ 
+  <table>
+  	<desc>股权出质登记信息</desc>
+		<name>Equity_Pledge</name>
+		<by>idx</by>
+		<colNums>11</colNums>
+		<step>8</step>
+		<waitInSeconds>1</waitInSeconds>
+  	<js>rMethod('gs_cz'),changeStyle('gs_tabs',this)</js>
+    <column idx="0">EquityPledge_No</column>
+    <column idx="1">EquityPledge_RegistrationNo</column>
+    <column idx="2">EquityPledge_Pledgor</column>
+    <column idx="3">EquityPledge_PledgorID</column>
+    <column idx="4">EquityPledge_Amount</column>
+    <column idx="5">EquityPledge_Pawnee</column>
+    <column idx="6">EquityPledge_PawneeID</column>
+    <column idx="7">EquityPledge_RegistrationDate</column>
+    <column idx="8">EquityPledge_Status</column>
+    <column idx="9">EquityPledge_AnnounceDate</column>
+    <column idx="10">EquityPledge_Change</column>
+  </table>
+  
+  <table>
+  	<desc>行政处罚信息</desc>
+		<name>Administrative_Penalty</name>
+		<by>idx</by>
+		<colNums>7</colNums>
+		<step>9</step>
+		<waitInSeconds>1</waitInSeconds>
+  	<js>rMethod('gs_cf'),changeStyle('gs_tabs',this)</js>
+    <column idx="0">Penalty_No</column>
+    <column idx="1">Penalty_Code</column>
+    <column idx="2">Penalty_IllegalType</column>
+    <column idx="3">Penalty_DecisionContent</column>
+    <column idx="4">Penalty_DecisionInsititution</column>
+    <column idx="5">Penalty_DecisionDate</column>
+    <column idx="6">Penalty_Details</column>
+  </table>
+  
+  <table>
+  	<desc>经营异常信息</desc>
+		<name>Business_Abnormal</name>
+		<by>idx</by>
+		<colNums>6</colNums>
+		<step>10</step>
+		<waitInSeconds>3</waitInSeconds>
+  	<js>rMethod('gs_yc'),changeStyle('gs_tabs',this)</js>
+    <column idx="0">Abnormal_No</column>
+    <column idx="1">Abnormal_Events</column>
+    <column idx="2">Abnormal_DatesIn</column>
+    <column idx="3">Abnormal_MoveoutReason</column>
+    <column idx="4">Abnormal_DatesOut</column>
+    <column idx="5">Abnormal_DecisionInstitution</column>
+  </table>
+  
+  <table>
+  	<desc>严重违法信息</desc>
+		<name>Serious_Violations</name>
+		<by>idx</by>
+		<colNums>6</colNums>
+		<step>11</step>
+		<waitInSeconds>1</waitInSeconds>
+  	<js>rMethod('gs_wf'),changeStyle('gs_tabs',this)</js>
+    <column idx="0">Serious_No</column>
+    <column idx="1">Serious_Events</column>
+    <column idx="2">Serious_DatesIn</column>
+    <column idx="3">Serious_MoveoutReason</column>
+    <column idx="4">Serious_DatesOut</column>
+    <column idx="5">Serious_DecisionInstitution</column>
+  </table>
+  
+  <table>
+  	<desc>抽查检查信息</desc>
+		<name>Spot_Check</name>
+		<by>idx</by>
+		<colNums>6</colNums>
+		<step>12</step>
+		<waitInSeconds>3</waitInSeconds>
+  	<js>rMethod('gs_cc'),changeStyle('gs_tabs',this)</js>
+    <column idx="0">Check_No</column>
+    <column idx="1">Check_Institution</column>
+    <column idx="2">Check_Type</column>
+    <column idx="3">Check_Date</column>
+    <column idx="4">Check_Result</column>
+    <column idx="5">Check_Remark</column>
+  </table>
+  
+</configuration>

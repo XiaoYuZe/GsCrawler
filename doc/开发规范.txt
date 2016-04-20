@@ -1,0 +1,9 @@
+更新流程：
+
+1、searcher 只初始化一次，调用search方法进行代码更新
+2、build_driver方法，浏览器初始化成功返回0，失败返回1
+3、search方法返回一个DataModel实例，update_status属性{0：查询无结果，1：查询有结果且成功，3：查询出错，需要重试，4：IP被禁}
+4、search方法捕捉所有异常
+5、Searcher.py、Tables.py中表配置如有修改，请添加注释，注明修改人信息。
+6、除表配置信息外，请勿修改Searcher.py FirefoxSearcher.py中的任何方法与函数，如有方法需要重写和添加，请修改各省自己的Searcher。
+7、调度任务程序，请参考NingxiaUpdateJob.py进行开发
