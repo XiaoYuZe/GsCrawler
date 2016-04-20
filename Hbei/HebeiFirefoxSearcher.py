@@ -683,7 +683,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
                 jingyingyichang_template.insert_into_database(self.cur_code, values)
         self.driver.switch_to.default_content()
 
-    # 加载原种违法信息
+    # 加载严重违法信息
     def load_yanzhongweifa(self):
 
         table_element = self.driver.find_element_by_xpath("//*[@id='blackTable']")
