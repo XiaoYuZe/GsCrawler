@@ -300,7 +300,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
             for table_element in table_list:
                 table_desc_element = table_element.find_element_by_xpath("table/tbody/tr[1]/th[1]")
                 table_desc = table_desc_element.text.split('\n')[0].strip()
-                print table_desc
+                # print table_desc
                 if table_desc not in self.load_func_dict:
                     raise UnknownTableException(self.cur_code, table_desc)
                 logging.info(u"½âÎö%s ..." % table_desc)
