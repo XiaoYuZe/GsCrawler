@@ -287,7 +287,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
         for i in range(tab_list_length):
             tab = self.driver.find_element_by_xpath("/html/body/div[4]/div/div/div[2]/div[1]/ul/li[%d]" % (i+1))
             tab_text = tab.text
-            print tab_text
+            # print tab_text
             if tab.get_attribute('class') != 'current':
                 tab.click()
             self.load_func_dict[tab_text]()
