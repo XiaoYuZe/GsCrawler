@@ -29,6 +29,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
         gudong_template.column_list = ['Shareholder_Type','Shareholder_Name', 'Shareholder_CertificationType', 'Shareholder_CertificationNo',  'Shareholder_Details',
                                'Subscripted_Capital', 'ActualPaid_Capital', 'Subscripted_Method', 'Subscripted_Amount', 'Subscripted_Time', 'ActualPaid_Method',
                                'ActualPaid_Amount', 'ActualPaid_Time']
+        dongchandiyadengji_template.column_list.remove('ChattelMortgage_AnnounceDate')
         gudong_template.column_list.remove('Shareholder_Details')
         self.start_page_handle_bak = None
         self.detail_page_handle = None
@@ -598,7 +599,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
                 values = []
                 for td in td_element_list:
                     val = td.text.strip()
-                    if val == u'详情':
+                    if val == u'查看详情':
                         values.append(td.find_element_by_xpath('a').get_attribute('href'))
                     else:
                         values.append(val)
@@ -747,7 +748,7 @@ if __name__ == '__main__':
     #
     # if searcher.build_driver() == 0:
     #     searcher.search(u"河北隆西石膏有限公司", u'石家庄市桥西区世纪缘食品商行')
-    name_list = [u"石家庄金利丰商贸有限公司"]
+    name_list = [u"永年县烨鑫紧固件制造有限公司"]
     searcher = HebeiFirefoxSearcher()
     searcher.set_config()
     for name in name_list:
