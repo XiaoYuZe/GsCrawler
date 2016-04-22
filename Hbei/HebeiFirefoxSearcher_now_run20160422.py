@@ -160,7 +160,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
         if not self.get_ip_status():
             return 4
         print u'等待查询结果'
-        search_result = self.find_element(".//*[@class='list-stat']")
+        search_result = self.driver.find_element_by_xpath(".//*[@class='list-stat']")
         #/html/body/div[4]/div/div[3]
         result_text = search_result.text.strip()
         print result_text
@@ -174,25 +174,25 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
     # 提交查询请求
     def submit_search_request(self):
         self.start_page_handle_bak = None
-        self.code_input_box = self.find_element(self.code_input_box_xpath)
-        self.code_submit_button = self.find_element(self.code_submit_button_xpath)
+        self.code_input_box = self.driver.find_element_by_xpath(self.code_input_box_xpath)
+        self.code_submit_button = self.driver.find_element_by_xpath(self.code_submit_button_xpath)
         self.code_input_box.clear()  # 清空输入框
         self.code_input_box.send_keys(self.cur_name)  # 输入查询代码
         self.code_submit_button.click()
-        iframe = self.find_element("/html/body/div[6]/div/iframe")
+        iframe = self.driver.find_element_by_xpath("/html/body/div[6]/div/iframe")
         self.screenshot_offset_x = iframe.location['x']
         self.screenshot_offset_y = iframe.location['y']
         self.driver.switch_to.frame(iframe)
         # self.driver.switch_to.default_content()
-        # self.validate_image = self.find_element(self.validate_image_xpath)  # 定位验证码图片
+        # self.validate_image = self.driver.find_element_by_xpath(self.validate_image_xpath)  # 定位验证码图片
 
         validate_image_save_path = SysConfig.get_validate_image_save_path()  # 获取验证码保存路径
         validate_file_path = self.get_validate_file_path()
         for i in range(SysConfig.max_try_times):
             try:
-                self.validate_image = self.find_element(self.validate_image_xpath)  # 定位验证码图片
-                self.validate_input_box = self.find_element(self.validate_input_box_xpath)  # 定位验证码输入框
-                self.validate_submit_button = self.find_element(self.validate_submit_button_xpath)  # 定位验证码提交按钮
+                self.validate_image = self.driver.find_element_by_xpath(self.validate_image_xpath)  # 定位验证码图片
+                self.validate_input_box = self.driver.find_element_by_xpath(self.validate_input_box_xpath)  # 定位验证码输入框
+                self.validate_submit_button = self.driver.find_element_by_xpath(self.validate_submit_button_xpath)  # 定位验证码提交按钮
                 if i >0:
                     self.validate_top2 = self.validate_image.location['y']              #该网站，第二次之后需要验证码界面向上移动150个距离
                     self.driver.execute_script("window.scrollTo(0,"+str(self.validate_top2-150)+");")
@@ -208,9 +208,9 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
                     self.driver.switch_to.default_content()
                     # self.driver.switch_to.alert.accept()
                     print u'不卡了'
-                    self.find_element('/html/body/div[8]/div[3]/div/button', 1).click()
+                    self.wait_for_element('/html/body/div[8]/div[3]/div/button', 1).click()
 
-                    # self.find_element('/html/body/div[8]/div[3]/div/button').click()
+                    # self.driver.find_element_by_xpath('/html/body/div[8]/div[3]/div/button').click()
                     # time.sleep(0.5)
                     self.driver.switch_to.frame(iframe)
                 except:
@@ -224,17 +224,17 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
                 self.driver.get(self.start_url)    # 重新加载搜索起始页
                 # time.sleep(5)
                 i=0
-                self.code_input_box = self.find_element(self.code_input_box_xpath)
-                self.code_submit_button = self.find_element(self.code_submit_button_xpath)
+                self.code_input_box = self.driver.find_element_by_xpath(self.code_input_box_xpath)
+                self.code_submit_button = self.driver.find_element_by_xpath(self.code_submit_button_xpath)
                 self.code_input_box.clear()  # 清空输入框
                 self.code_input_box.send_keys(self.cur_name)  # 输入查询代码
                 self.code_submit_button.click()
-                iframe = self.find_element("/html/body/div[6]/div/iframe")
+                iframe = self.driver.find_element_by_xpath("/html/body/div[6]/div/iframe")
                 self.screenshot_offset_x = iframe.location['x']
                 self.screenshot_offset_y = iframe.location['y']
                 self.driver.switch_to.frame(iframe)
                 # self.driver.switch_to.default_content()
-                self.validate_image = self.find_element(self.validate_image_xpath)  # 定位验证码图片
+                self.validate_image = self.driver.find_element_by_xpath(self.validate_image_xpath)  # 定位验证码图片
 
                 validate_image_save_path = SysConfig.get_validate_image_save_path()  # 获取验证码保存路径
                 validate_file_path = self.get_validate_file_path()
@@ -244,7 +244,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
 
     # 判断IP是否被禁
     def get_ip_status(self):
-        body_text = self.find_element("/html/body").text
+        body_text = self.driver.find_element_by_xpath("/html/body").text
         if body_text.startswith(u'您的访问过于频繁'):
             return False
         else:
@@ -265,7 +265,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
     #     res = 9
     #     if not self.get_ip_status():
     #         return 4
-    #     search_result = self.find_element('/html/body/form/div/div/dl')
+    #     search_result = self.driver.find_element_by_xpath('/html/body/form/div/div/dl')
     #     result_text = search_result.text.strip()
     #     if result_text == '':
     #         logging.info(u'查询结果0条')
@@ -278,7 +278,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
     #         # print 'cur_code:' + self.cur_code
     #         # print 'company_name:'+company_name
     #         # print 'company_abstract:'+company_abstract
-    #         detail_link = self.find_element('/html/body/form/div/div/dl/div/dt/a')
+    #         detail_link = self.driver.find_element_by_xpath('/html/body/form/div/div/dl/div/dt/a')
     #         detail_link.click()
     #         self.detail_page_handle = self.driver.window_handles[-1]
     #         self.driver.close()
@@ -291,7 +291,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
     def parse_detail_page(self):
         tab_list_length = len(self.driver.find_elements_by_xpath(self.tab_list_xpath))
         for i in range(tab_list_length):
-            tab = self.find_element("/html/body/div[4]/div/div/div[2]/div[1]/ul/li[%d]" % (i+1))
+            tab = self.driver.find_element_by_xpath("/html/body/div[4]/div/div/div[2]/div[1]/ul/li[%d]" % (i+1))
             tab_text = tab.text
             # print tab_text
             if tab.get_attribute('class') != 'current':
@@ -319,7 +319,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
     def load_jiben(self, table_element):
         jiben_template.delete_from_database(self.cur_code)
         print u'加载基本信息'
-        # table_element = self.find_element("/html/body/div[4]/div/div/div[2]/div[3]/div[1]/table")
+        # table_element = self.driver.find_element_by_xpath("/html/body/div[4]/div/div/div[2]/div[3]/div[1]/table")
         tr_element_list = table_element.find_elements_by_xpath('table/tbody/tr')
         # print tr_element_list
 
@@ -344,7 +344,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
         print u'加载股东信息'
         condition = False
         gudong_template.delete_from_database(self.cur_code)
-        table_element = self.find_element(".//*[@id='investorTable']")
+        table_element = self.driver.find_element_by_xpath(".//*[@id='investorTable']")
         if len(table_element.find_elements_by_xpath("tbody/tr")) > 3:
             try:
                 last_index_element = table_element.find_elements_by_xpath("tbody/tr[last()]/th/ul/li")
@@ -361,9 +361,9 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
 
             # for i in range(index_element_list_length):
             #     if i > 0:
-            #         index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+            #         index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
             #         index_element.click()
-            #         table_element = self.find_element("/html/body/table[1]")
+            #         table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
             tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
             for tr_element in tr_element_list[2:(len(tr_element_list)-1)]:
                 td_element_list = tr_element.find_elements_by_xpath('td')
@@ -404,9 +404,9 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
 
                 # for i in range(index_element_list_length):
                 #     if i > 0:
-                #         index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+                #         index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
                 #         index_element.click()
-                #         table_element = self.find_element("/html/body/table[1]")
+                #         table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
 
         # pass
         print u'加载股东信息成功！'
@@ -426,7 +426,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
         print u'加载变更信息'
         condition = False
         biangeng_template.delete_from_database(self.cur_code)
-        table_element = self.find_element("//*[@id='alterTable']")
+        table_element = self.driver.find_element_by_xpath("//*[@id='alterTable']")
         if len(table_element.find_elements_by_xpath("tbody/tr")) > 3:
             try:
                 last_index_element = table_element.find_elements_by_xpath("tbody/tr[last()]/th/ul/li")
@@ -434,13 +434,13 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
                     condition = True
             except:
                 pass
-            # last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+            # last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
             # index_element_list_length = int(last_index_element.text.strip())
             # for i in range(index_element_list_length):
             #     if i > 0:
-            #         index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+            #         index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
             #         index_element.click()
-            #         table_element = self.find_element("/html/body/table[1]")
+            #         table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
             tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
             for tr_element in tr_element_list[2:(len(tr_element_list)-1)]:
                 td_element_list = tr_element.find_elements_by_xpath('td')
@@ -500,7 +500,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
     def load_zhuyaorenyuan(self, table_element):
         condition = False
         zhuyaorenyuan_template.delete_from_database(self.cur_code)
-        table_element = self.find_element("//*[@id='memberTable']")
+        table_element = self.driver.find_element_by_xpath("//*[@id='memberTable']")
         if len(table_element.find_elements_by_xpath("tbody/tr")) > 3:
             try:
                 last_index_element = table_element.find_elements_by_xpath("tbody/tr[last()]/th/ul/li")
@@ -510,13 +510,13 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
             except:
                 pass
 
-            # last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+            # last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
             # index_element_list_length = int(last_index_element.text.strip())
             # for i in range(index_element_list_length):
             #     if i > 0:
-            #         index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+            #         index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
             #         index_element.click()
-            #         table_element = self.find_element("/html/body/table[1]")
+            #         table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
             tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
             for tr_element in tr_element_list[2:len(tr_element_list)-1]:
                 values = []
@@ -553,16 +553,16 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
     # 加载分支机构信息
     def load_fenzhijigou(self, table_iframe):
 
-        table_element = self.find_element(".//*[@id='branchTable']")
+        table_element = self.driver.find_element_by_xpath(".//*[@id='branchTable']")
         if len(table_element.find_elements_by_xpath("tbody/tr")) > 3:
             fenzhijigou_template.delete_from_database(self.cur_code)
-        #     last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+        #     last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
         #     index_element_list_length = int(last_index_element.text.strip())
         #     for i in range(index_element_list_length):
         #         if i > 0:
-        #             index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+        #             index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
         #             index_element.click()
-        #             table_element = self.find_element("/html/body/table[1]")
+        #             table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
             tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
             for tr_element in tr_element_list[2:len(tr_element_list)-1]:
                 td_element_list = tr_element.find_elements_by_xpath('td')
@@ -575,7 +575,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
 
     # 加载清算信息
     def load_qingsuan(self, table_iframe):
-        # table_element = self.find_element("/html/body/table[1]")
+        # table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
         # val_1 = table_element.find_element_by_xpath('tbody/tr[2]/td').text.strip()
         # val_2 = table_element.find_element_by_xpath('tbody/tr[3]/td').text.strip()
         # values = [val_1, val_2]
@@ -587,7 +587,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
     # 加载动产抵押信息
     def load_dongchandiyadengji(self):
 
-        table_element = self.find_element(".//*[@id='mortageTable']")
+        table_element = self.driver.find_element_by_xpath(".//*[@id='mortageTable']")
         if len(table_element.find_elements_by_xpath("tbody/tr")) > 3:
             dongchandiyadengji_template.delete_from_database(self.cur_code)
             tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
@@ -596,13 +596,13 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
         # table_element = table_element_list[0]
         # row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         # if row_cnt > 2:
-        #     last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+        #     last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
         #     index_element_list_length = int(last_index_element.text.strip())
         #     for i in range(index_element_list_length):
         #         if i > 0:
-        #             index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+        #             index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
         #             index_element.click()
-        #             table_element = self.find_element("/html/body/table[1]")
+        #             table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
         #         tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
             for tr_element in tr_element_list[2:len(tr_element_list)-1]:
                 td_element_list = tr_element.find_elements_by_xpath('td')
@@ -619,7 +619,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
     # 加载股权出质登记信息
     def load_guquanchuzhidengji(self):
 
-        table_element = self.find_element(".//*[@id='pledgeTable']")
+        table_element = self.driver.find_element_by_xpath(".//*[@id='pledgeTable']")
         if len(table_element.find_elements_by_xpath("tbody/tr")) > 3:
             guquanchuzhidengji_template.delete_from_database(self.cur_code)
             tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
@@ -628,13 +628,13 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
         # table_element = table_element_list[0]
         # row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         # if row_cnt > 2:
-        #     last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+        #     last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
         #     index_element_list_length = int(last_index_element.text.strip())
         #     for i in range(index_element_list_length):
         #         if i > 0:
-        #             index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+        #             index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
         #             index_element.click()
-        #             table_element = self.find_element("/html/body/table[1]")
+        #             table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
         #         tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
             for tr_element in tr_element_list[2:len(tr_element_list)-1]:
                 td_element_list = tr_element.find_elements_by_xpath('td')
@@ -648,7 +648,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
     # 加载行政处罚信息
     def load_xingzhengchufa(self):
 
-        table_element = self.find_element(".//*[@id='punishTable']")
+        table_element = self.driver.find_element_by_xpath(".//*[@id='punishTable']")
         if len(table_element.find_elements_by_xpath("tbody/tr")) > 3:
             xingzhengchufa_template.delete_from_database(self.cur_code)
             tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
@@ -657,13 +657,13 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
         # table_element = table_element_list[0]
         # row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         # if row_cnt > 2:
-        #     last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+        #     last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
         #     index_element_list_length = int(last_index_element.text.strip())
         #     for i in range(index_element_list_length):
         #         if i > 0:
-        #             index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+        #             index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
         #             index_element.click()
-        #             table_element = self.find_element("/html/body/table[1]")
+        #             table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
         #     tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
             for tr_element in tr_element_list[2:len(tr_element_list)-1]:
                 td_element_list = tr_element.find_elements_by_xpath('td')
@@ -678,7 +678,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
     def load_jingyingyichang(self):
         # print 'helloworld'
 
-        table_element = self.find_element("//*[@id='exceptTable']")
+        table_element = self.driver.find_element_by_xpath("//*[@id='exceptTable']")
         # print table_element.text
         if len(table_element.find_elements_by_xpath("tbody/tr")) > 3:
             jingyingyichang_template.delete_from_database(self.cur_code)
@@ -697,7 +697,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
     # 加载严重违法信息
     def load_yanzhongweifa(self):
 
-        table_element = self.find_element("//*[@id='blackTable']")
+        table_element = self.driver.find_element_by_xpath("//*[@id='blackTable']")
         if len(table_element.find_elements_by_xpath("tbody/tr")) > 3:
             yanzhongweifa_template.delete_from_database(self.cur_code)
         # self.driver.switch_to.frame(table_iframe)
@@ -705,13 +705,13 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
         # table_element = table_element_list[0]
         # row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         # if row_cnt > 2:
-        #     last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+        #     last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
         #     index_element_list_length = int(last_index_element.text.strip())
         #     for i in range(index_element_list_length):
         #         if i > 0:
-        #             index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+        #             index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
         #             index_element.click()
-        #             table_element = self.find_element("/html/body/table[1]")
+        #             table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
             tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
             for tr_element in tr_element_list[2:len(tr_element_list)-1]:
                 td_element_list = tr_element.find_elements_by_xpath('td')
@@ -725,7 +725,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
     # 加载抽查检查信息
     def load_chouchajiancha(self):
 
-        table_element = self.find_element("//*[@id='spotcheckTable']")
+        table_element = self.driver.find_element_by_xpath("//*[@id='spotcheckTable']")
         if len(table_element.find_elements_by_xpath("tbody/tr")) > 3:
             chouchajiancha_template.delete_from_database(self.cur_code)
         # self.driver.switch_to.frame(table_iframe)
@@ -733,13 +733,13 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
         # table_element = table_element_list[0]
         # row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         # if row_cnt > 2:
-        #     last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+        #     last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
         #     index_element_list_length = int(last_index_element.text.strip())
         #     for i in range(index_element_list_length):
         #         if i > 0:
-        #             index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+        #             index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
         #             index_element.click()
-        #             table_element = self.find_element("/html/body/table[1]")
+        #             table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
             tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
             for tr_element in tr_element_list[2:len(tr_element_list)-1]:
                 td_element_list = tr_element.find_elements_by_xpath('td')

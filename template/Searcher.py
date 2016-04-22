@@ -88,7 +88,6 @@ class Searcher(object):
         self.driver.switch_to.window(self.start_page_handle)
 
 
-
     # 识别验证码
     def recognize_validate_code(self, validate_path):
         print '>>>>>>>>'
@@ -141,6 +140,10 @@ class Searcher(object):
 
     def wait_for_element(self, xpath, seconds):
         return WebDriverWait(self.driver, seconds).\
+            until(expected_conditions.presence_of_element_located((By.XPATH, xpath)))
+
+    def find_element(self, xpath,  time_out=SysConfig.element_locate_timeout):
+        return WebDriverWait(self.driver, time_out).\
             until(expected_conditions.presence_of_element_located((By.XPATH, xpath)))
 
     # 下载登记信息

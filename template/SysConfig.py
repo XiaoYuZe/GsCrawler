@@ -7,7 +7,8 @@ from template.logger import logging
 
 page_load_timeout = 15
 web_element_wait_timeout = 15
-implicitly_wait_timeout = 15
+implicitly_wait_timeout = 1
+element_locate_timeout = 15
 max_try_times = 15
 province = None
 
