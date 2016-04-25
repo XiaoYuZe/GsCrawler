@@ -116,7 +116,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
                             result.find_element_by_xpath("div[1]/a").click()
                             self.detail_page_handle = self.driver.window_handles[-1]
                             self.driver.switch_to.window(self.detail_page_handle)
-                            print u'进入详情页成功！'
+                            # print u'进入详情页成功！'
                             try:
                                 self.parse_detail_page()
                             except (UnknownTableException, UnknownColumnException):
