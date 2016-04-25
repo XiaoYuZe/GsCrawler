@@ -571,7 +571,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
                     val = td.text.strip()
                     values.append(val)
                 fenzhijigou_template.insert_into_database(self.cur_code, values)
-        pass
+        # pass
 
     # 加载清算信息
     def load_qingsuan(self, table_iframe):
