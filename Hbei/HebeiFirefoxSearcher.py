@@ -159,7 +159,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
     def get_search_result(self):
         if not self.get_ip_status():
             return 4
-        print u'等待查询结果'
+        # print u'等待查询结果'
         search_result = self.find_element(".//*[@class='list-stat']")
         #/html/body/div[4]/div/div[3]
         result_text = search_result.text.strip()
@@ -207,7 +207,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
                 try:
                     self.driver.switch_to.default_content()
                     # self.driver.switch_to.alert.accept()
-                    print u'不卡了'
+                    # print u'不卡了'
                     self.find_element('/html/body/div[8]/div[3]/div/button', 1).click()
 
                     # self.find_element('/html/body/div[8]/div[3]/div/button').click()
@@ -300,7 +300,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
 
     # 加载登记信息
     def load_dengji(self):
-        print u'加载登记信息'
+        # print u'加载登记信息'
         table_div_list_large = self.driver.find_elements_by_xpath("/html/body/div[4]/div/div/div[2]/div[3]")
         for table_div_list in table_div_list_large:
             table_list = table_div_list.find_elements_by_xpath(".//*[@style='display: block;']")
@@ -318,7 +318,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
     # 加载基本信息
     def load_jiben(self, table_element):
         jiben_template.delete_from_database(self.cur_code)
-        print u'加载基本信息'
+        # print u'加载基本信息'
         # table_element = self.find_element("/html/body/div[4]/div/div/div[2]/div[3]/div[1]/table")
         tr_element_list = table_element.find_elements_by_xpath('table/tbody/tr')
         # print tr_element_list
@@ -341,7 +341,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
 
     # 加载股东信息
     def load_gudong(self, table_element):
-        print u'加载股东信息'
+        # print u'加载股东信息'
         condition = False
         gudong_template.delete_from_database(self.cur_code)
         table_element = self.find_element(".//*[@id='investorTable']")
@@ -409,7 +409,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
                 #         table_element = self.find_element("/html/body/table[1]")
 
         # pass
-        print u'加载股东信息成功！'
+        # print u'加载股东信息成功！'
 
     def load_gudong_detail(self):
         self.driver.switch_to.window(self.driver.window_handles[-1])
@@ -423,7 +423,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
 
     # 加载变更信息
     def load_biangeng(self, table_element):
-        print u'加载变更信息'
+        # print u'加载变更信息'
         condition = False
         biangeng_template.delete_from_database(self.cur_code)
         table_element = self.find_element("//*[@id='alterTable']")
@@ -476,11 +476,11 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
                     i+=1
 
         # pass
-        print u'加载变更信息成功'
+        # print u'加载变更信息成功'
 
     # 加载备案信息
     def load_beian(self):
-        print u'加载备案信息'
+        # print u'加载备案信息'
         # time.sleep(0.5)
         table_div_list_large = self.driver.find_elements_by_xpath("/html/body/div[4]/div/div/div[2]/div[3]")
         for table_div_list in table_div_list_large:
