@@ -1,5 +1,5 @@
 # coding=gbk
-from gsme.DBClient import database_client_cursor
+from template.DBClient import database_client_cursor
 from template.FirefoxSearcher import FirefoxSearcher
 from selenium import common
 import template.SysConfig as SysConfig
@@ -7,7 +7,7 @@ import sys
 import os
 from template.UnknownTableException import UnknownTableException
 from template.UnknownColumnException import UnknownColumnException
-from gsme.Tables import *
+from template.Tables import *
 from template.DataModel import DataModel
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
