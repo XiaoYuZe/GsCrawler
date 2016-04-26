@@ -492,14 +492,15 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
         #             values.extend((len(gudong_template.column_list) - len(values))*[''])
         #             gudong_template.insert_into_database(self.cur_code, values)
     def load_gudong_detail(self):
-        self.driver.switch_to.window(self.driver.window_handles[-1])
-        td_element_list = self.driver.find_elements_by_xpath("//*[@id='details']/table/tbody/tr[4]/td")
-        values = []
-        for td in td_element_list[1:]:
-            values.append(td.text.strip())
-        self.driver.close()
-        self.driver.switch_to.window(self.detail_page_handle)
-        return values
+        # self.driver.switch_to.window(self.driver.window_handles[-1])
+        # td_element_list = self.driver.find_elements_by_xpath("//*[@id='details']/table/tbody/tr[4]/td")
+        # values = []
+        # for td in td_element_list[1:]:
+        #     values.append(td.text.strip())
+        # self.driver.close()
+        # self.driver.switch_to.window(self.detail_page_handle)
+        # return values
+        pass
 
 
     # 加载变更信息
@@ -749,7 +750,10 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
         # dongchandiyadengji_template.delete_from_database(self.cur_code)
         # table_iframe = self.driver.find_element_by_xpath(".//div[@id='dcdy']/iframe")
         # self.driver.switch_to.frame(table_iframe)
-        # table_element_list = self.driver.find_elements_by_xpath("//*[@id='dongchandiya']/table")
+        table_element_if = self.driver.find_element_by_xpath("//*[@id='mortDiv']/table")
+        print table_element_if.text,'dongchandiya'
+        if table_element_if.text !='':
+            dongchandiyadengji_template.delete_from_database(self.cur_code)
         # table_element = table_element_list[0]
         # row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         # if row_cnt > 2:
@@ -760,25 +764,28 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
         #             index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
         #             index_element.click()
         #             table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
-        #         tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
-        #         for tr_element in tr_element_list[2:]:
-        #             td_element_list = tr_element.find_elements_by_xpath('td')
-        #             values = []
-        #             for td in td_element_list:
-        #                 val = td.text.strip()
-        #                 if val == u'详情':
-        #                     values.append(td.find_element_by_xpath('a').get_attribute('href'))
-        #                 else:
-        #                     values.append(val)
-        #             dongchandiyadengji_template.insert_into_database(self.cur_code, values)
+            tr_element_list = table_element_if.find_elements_by_xpath('tbody/tr')
+            for tr_element in tr_element_list:
+                td_element_list = tr_element.find_elements_by_xpath('td')
+                values = []
+                for td in td_element_list:
+                    val = td.text.strip()
+                    if val == u'详情':
+                        values.append(td.find_element_by_xpath('a').get_attribute('href'))
+                    else:
+                        values.append(val)
+                dongchandiyadengji_template.insert_into_database(self.cur_code, values)
         self.driver.switch_to.default_content()
 
     # 加载股权出质登记信息
     def load_guquanchuzhidengji(self):
-        # guquanchuzhidengji_template.delete_from_database(self.cur_code)
         # # table_iframe = self.driver.find_element_by_xpath(".//div[@id='guquanchuzhi']/iframe")
         # # self.driver.switch_to.frame(table_iframe)
-        # table_element_list = self.driver.find_elements_by_xpath("//*[@id='guquanchuzhi']/table")
+        table_element_if = self.driver.find_element_by_xpath("//*[@id='pledgeDiv']/table")
+        print table_element_if.text, 'guquanchuzhi'
+        if table_element_if.text !='':
+            guquanchuzhidengji_template.delete_from_database(self.cur_code)
+
         # table_element = table_element_list[0]
         # row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         # if row_cnt > 2:
@@ -789,48 +796,54 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
         #             index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
         #             index_element.click()
         #             table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
-        #         tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
-        #         for tr_element in tr_element_list[2:]:
-        #             td_element_list = tr_element.find_elements_by_xpath('td')
-        #             values = []
-        #             for td in td_element_list:
-        #                 val = td.text.strip()
-        #                 values.append(val)
-        #             guquanchuzhidengji_template.insert_into_database(self.cur_code, values)
+            tr_element_list = table_element_if.find_elements_by_xpath('tbody/tr')
+            for tr_element in tr_element_list:
+                td_element_list = tr_element.find_elements_by_xpath('td')
+                values = []
+                for td in td_element_list:
+                    val = td.text.strip()
+                    values.append(val)
+                guquanchuzhidengji_template.insert_into_database(self.cur_code, values)
         self.driver.switch_to.default_content()
 
     # 加载行政处罚信息
     def load_xingzhengchufa(self):
-       #  xingzhengchufa_template.delete_from_database(self.cur_code)
-       # # table_iframe = self.driver.find_element_by_xpath(".//div[@id='xingzhengchufa']/iframe")
-       #  #self.driver.switch_to.frame(table_iframe)
-       #  table_element_list = self.driver.find_elements_by_xpath("//*[@id='xingzhengchufa']/table")
-       #  table_element = table_element_list[0]
-       #  row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
-       #  if row_cnt > 2:
-       #      last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
-       #      index_element_list_length = int(last_index_element.text.strip())
-       #      for i in range(index_element_list_length):
-       #          if i > 0:
-       #              index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
-       #              index_element.click()
-       #              table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
-       #          tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
-       #          for tr_element in tr_element_list[2:]:
-       #              td_element_list = tr_element.find_elements_by_xpath('td')
-       #              values = []
-       #              for td in td_element_list:
-       #                  val = td.text.strip()
-       #                  values.append(val)
-       #              xingzhengchufa_template.insert_into_database(self.cur_code, values)
-       self.driver.switch_to.default_content()
+
+        # # table_iframe = self.driver.find_element_by_xpath(".//div[@id='xingzhengchufa']/iframe")
+        #  #self.driver.switch_to.frame(table_iframe)
+        table_element_if = self.driver.find_element_by_xpath("//*[@id='punDiv']/table")
+        print table_element_if.text, 'xingzhengchufa'
+        if table_element_if.text !='':
+            xingzhengchufa_template.delete_from_database(self.cur_code)
+        #  table_element = table_element_list[0]
+        #  row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
+        #  if row_cnt > 2:
+        #      last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+        #      index_element_list_length = int(last_index_element.text.strip())
+        #      for i in range(index_element_list_length):
+        #          if i > 0:
+        #              index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+        #              index_element.click()
+        #              table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+            tr_element_list = table_element_if.find_elements_by_xpath('tbody/tr')
+            for tr_element in tr_element_list:
+                td_element_list = tr_element.find_elements_by_xpath('td')
+                values = []
+                for td in td_element_list:
+                    val = td.text.strip()
+                    values.append(val)
+                xingzhengchufa_template.insert_into_database(self.cur_code, values)
+        self.driver.switch_to.default_content()
 
     # 加载经营异常信息
     def load_jingyingyichang(self):
-        # jingyingyichang_template.delete_from_database(self.cur_code)
+
         # table_iframe = self.driver.find_element_by_xpath(".//div[@id='jyyc']/iframe")
         # self.driver.switch_to.frame(table_iframe)
-        # table_element_list = self.driver.find_elements_by_xpath("//*[@id='jingyingyichangminglu']/table")
+        table_element_if = self.driver.find_element_by_xpath("//*[@id='excDiv']/table")
+        print table_element_if.text,'jingyingyichang'
+        if table_element_if.text !='':
+            jingyingyichang_template.delete_from_database(self.cur_code)
         # table_element = table_element_list[0]
         # row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         # if row_cnt > 2:
@@ -841,22 +854,25 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
         #             index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
         #             index_element.click()
         #             table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
-        #         tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
-        #         for tr_element in tr_element_list[2:]:
-        #             td_element_list = tr_element.find_elements_by_xpath('td')
-        #             values = []
-        #             for td in td_element_list:
-        #                 val = td.text.strip()
-        #                 values.append(val)
-        #             jingyingyichang_template.insert_into_database(self.cur_code, values)
+            tr_element_list = table_element_if.find_elements_by_xpath('tbody/tr')
+            for tr_element in tr_element_list:
+                td_element_list = tr_element.find_elements_by_xpath('td')
+                values = []
+                for td in td_element_list:
+                    val = td.text.strip()
+                    values.append(val)
+                jingyingyichang_template.insert_into_database(self.cur_code, values)
         self.driver.switch_to.default_content()
 
     # 加载严重违法信息
     def load_yanzhongweifa(self):
-        # yanzhongweifa_template.delete_from_database(self.cur_code)
+
         # table_iframe = self.driver.find_element_by_xpath(".//div[@id='yzwf']/iframe")
         # self.driver.switch_to.frame(table_iframe)
-        # table_element_list = self.driver.find_elements_by_xpath("//*[@id='yanzhongweifaqiye']/table")
+        table_element_if = self.driver.find_element_by_xpath("//*[@id='serillDiv']/table")
+        print table_element_if.text,'yanzhongweifa'
+        if table_element_if.text !='':
+            yanzhongweifa_template.delete_from_database(self.cur_code)
         # table_element = table_element_list[0]
         # row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         # if row_cnt > 2:
@@ -867,22 +883,25 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
         #             index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
         #             index_element.click()
         #             table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
-        #         tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
-        #         for tr_element in tr_element_list[2:]:
-        #             td_element_list = tr_element.find_elements_by_xpath('td')
-        #             values = []
-        #             for td in td_element_list:
-        #                 val = td.text.strip()
-        #                 values.append(val)
-        #             yanzhongweifa_template.insert_into_database(self.cur_code, values)
+            tr_element_list = table_element_if.find_elements_by_xpath('tbody/tr')
+            for tr_element in tr_element_list:
+                td_element_list = tr_element.find_elements_by_xpath('td')
+                values = []
+                for td in td_element_list:
+                    val = td.text.strip()
+                    values.append(val)
+                yanzhongweifa_template.insert_into_database(self.cur_code, values)
         self.driver.switch_to.default_content()
 
     # 加载抽查检查信息
     def load_chouchajiancha(self):
-        # chouchajiancha_template.delete_from_database(self.cur_code)
+
         # table_iframe = self.driver.find_element_by_xpath(".//div[@id='ccjc']/iframe")
         # self.driver.switch_to.frame(table_iframe)
-        # table_element_list = self.driver.find_elements_by_xpath("//*[@id='chouchaxinxi']/table")
+        table_element_if = self.driver.find_element_by_xpath("//*[@id='spotCheckDiv']/table")
+        print table_element_if.text, 'chouchajiancha'
+        if table_element_if.text !='':
+            chouchajiancha_template.delete_from_database(self.cur_code)
         # table_element = table_element_list[0]
         # row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         # if row_cnt > 2:
@@ -893,20 +912,19 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
         #             index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
         #             index_element.click()
         #             table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
-        #         tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
-        #         for tr_element in tr_element_list[2:]:
-        #             td_element_list = tr_element.find_elements_by_xpath('td')
-        #             values = []
-        #             for td in td_element_list:
-        #                 val = td.text.strip()
-        #                 values.append(val)
-        #             chouchajiancha_template.insert_into_database(self.cur_code, values)
-        # self.driver.back()
+            tr_element_list = table_element_if.find_elements_by_xpath('tbody/tr')
+            for tr_element in tr_element_list:
+                td_element_list = tr_element.find_elements_by_xpath('td')
+                values = []
+                for td in td_element_list:
+                    val = td.text.strip()
+                    values.append(val)
+                chouchajiancha_template.insert_into_database(self.cur_code, values)
         self.driver.switch_to.default_content()
 
 if __name__ == '__main__':
 
-    name_list = [u'西宁长宁建筑有限责任公司']
+    name_list = [u'西宁普特燃烧机销售有限公司']
     searcher = QingHaiFirefoxSearcher()
     searcher.set_config()
     for name in name_list:
