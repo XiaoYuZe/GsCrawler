@@ -7,7 +7,7 @@ import sys
 import os
 from template.UnknownTableException import UnknownTableException
 from template.UnknownColumnException import UnknownColumnException
-from tgsme.Tables import *
+from gsme.Tables import *
 from template.DataModel import DataModel
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
