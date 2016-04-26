@@ -751,7 +751,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
         # table_iframe = self.driver.find_element_by_xpath(".//div[@id='dcdy']/iframe")
         # self.driver.switch_to.frame(table_iframe)
         table_element_if = self.driver.find_element_by_xpath("//*[@id='mortDiv']/table")
-        print table_element_if.text,'dongchandiya'
+        # print table_element_if.text,'dongchandiya'
         if table_element_if.text !='':
             dongchandiyadengji_template.delete_from_database(self.cur_code)
         # table_element = table_element_list[0]
@@ -782,7 +782,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
         # # table_iframe = self.driver.find_element_by_xpath(".//div[@id='guquanchuzhi']/iframe")
         # # self.driver.switch_to.frame(table_iframe)
         table_element_if = self.driver.find_element_by_xpath("//*[@id='pledgeDiv']/table")
-        print table_element_if.text, 'guquanchuzhi'
+        # print table_element_if.text, 'guquanchuzhi'
         if table_element_if.text !='':
             guquanchuzhidengji_template.delete_from_database(self.cur_code)
 
@@ -812,7 +812,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
         # # table_iframe = self.driver.find_element_by_xpath(".//div[@id='xingzhengchufa']/iframe")
         #  #self.driver.switch_to.frame(table_iframe)
         table_element_if = self.driver.find_element_by_xpath("//*[@id='punDiv']/table")
-        print table_element_if.text, 'xingzhengchufa'
+        # print table_element_if.text, 'xingzhengchufa'
         if table_element_if.text !='':
             xingzhengchufa_template.delete_from_database(self.cur_code)
         #  table_element = table_element_list[0]
@@ -841,7 +841,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
         # table_iframe = self.driver.find_element_by_xpath(".//div[@id='jyyc']/iframe")
         # self.driver.switch_to.frame(table_iframe)
         table_element_if = self.driver.find_element_by_xpath("//*[@id='excDiv']/table")
-        print table_element_if.text,'jingyingyichang'
+        # print table_element_if.text,'jingyingyichang'
         if table_element_if.text !='':
             jingyingyichang_template.delete_from_database(self.cur_code)
         # table_element = table_element_list[0]
@@ -870,7 +870,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
         # table_iframe = self.driver.find_element_by_xpath(".//div[@id='yzwf']/iframe")
         # self.driver.switch_to.frame(table_iframe)
         table_element_if = self.driver.find_element_by_xpath("//*[@id='serillDiv']/table")
-        print table_element_if.text,'yanzhongweifa'
+        # print table_element_if.text,'yanzhongweifa'
         if table_element_if.text !='':
             yanzhongweifa_template.delete_from_database(self.cur_code)
         # table_element = table_element_list[0]
@@ -899,7 +899,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
         # table_iframe = self.driver.find_element_by_xpath(".//div[@id='ccjc']/iframe")
         # self.driver.switch_to.frame(table_iframe)
         table_element_if = self.driver.find_element_by_xpath("//*[@id='spotCheckDiv']/table")
-        print table_element_if.text, 'chouchajiancha'
+        # print table_element_if.text, 'chouchajiancha'
         if table_element_if.text !='':
             chouchajiancha_template.delete_from_database(self.cur_code)
         # table_element = table_element_list[0]
