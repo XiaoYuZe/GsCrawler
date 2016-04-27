@@ -12,6 +12,8 @@ def set_logger_name(file_name):
                         filemode='w')
 
 if __name__ == '__main__':
-    set_logger_name(get_log_path(process_identity))
+    set_logger_name(r'D:\\blacksistins.txt')
+    for i in range(5):
+        logging.info('blacksisters%d' %i)
 
 
