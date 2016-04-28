@@ -46,7 +46,6 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
         self.plugin_path = os.path.join(sys.path[0], r'..\ocr\qinghai\qinghai.bat')
         self.province = u'�ຣʡ'
 
-
     def build_driver(self):
         build_result = 0
         profile = webdriver.FirefoxProfile()
@@ -243,7 +242,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
             self.driver.get(self.start_url)
             self.start_page_handle = self.driver.current_window_handle
         except common.exceptions.TimeoutException:
-            pass
+            load_result = False
         return load_result
 
 
