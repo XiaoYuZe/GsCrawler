@@ -40,7 +40,7 @@ class TableTemplate(object):
                 col_str += (","+self.column_dict[col_desc])
                 val_str += (",'"+values[col_desc]+"'")
             sql = u"insert into %s(%s) values(%s)" % (self.table_name, col_str, val_str)
-        print sql
+        # print sql
         database_client_cursor.execute(sql)
 
 
