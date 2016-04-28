@@ -61,11 +61,11 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
 
     # parser from Sichuan
     def parse_detail_page(self):
-        tab_list_length = len(self.driver.find_elements_by_xpath(self.tab_list_xpath))
+        tab_list_length = len(self.find_elements(self.tab_list_xpath))
         #print tab_list_length
-        #print self.driver.find_elements_by_xpath(self.tab_list_xpath)[1]
+        #print self.find_elements(self.tab_list_xpath)[1]
         for i in range(tab_list_length):
-            tab = self.driver.find_element_by_xpath(".//*[@id='tabs']/ul/li[%d]" % (i+1))
+            tab = self.find_element(".//*[@id='tabs']/ul/li[%d]" % (i+1))
             tab_text = tab.text
             # print 'ddddddddddddddd'
             # print tab_text, 'tab_text_66'
@@ -88,13 +88,13 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
                 self.submit_search_request()
                 self.get_search_result()
                 if self.search_model.update_status == 1:
-                    result_list = self.driver.find_elements_by_xpath("/html/body/div[1]/div/div[2]/div")
+                    result_list = self.find_elements("/html/body/div[1]/div/div[2]/div")
                     row=1
 
                     for result in result_list:
                         # print len(result_list),'~~~~89~~~~~'
 
-                        if row ==len(self.driver.find_elements_by_xpath("html/body/div[1]/div/div[2]/div[@class='list']"))+1:
+                        if row ==len(self.find_elements("html/body/div[1]/div/div[2]/div[@class='list']"))+1:
                             # print "the_search_result_row_number_is:"+str(row-1)
 
                             # self.switch_to_search_page()
@@ -103,7 +103,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
 
                             continue
 
-                        result = self.driver.find_element_by_xpath("html/body/div[1]/div/div[2]/div[@class='list']["+str(row)+"]")
+                        result = self.find_element("html/body/div[1]/div/div[2]/div[@class='list']["+str(row)+"]")
                         # self.driver.execute_script("arguments[0].style=''", result)
                         # print result.text, 'result 90'
                         org_name = result.find_element_by_xpath("ul/li[1]/a").text
@@ -189,7 +189,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
             if handle != self.start_page_handle:
                 self.driver.switch_to.window(handle)
                 self.search_result_handle=handle
-        search_result = self.driver.find_element_by_xpath("html/body/div[1]/div/div[2]/div")
+        search_result = self.find_element("html/body/div[1]/div/div[2]/div")
 
         result_text = search_result.text.strip()
         # print result_text
@@ -204,21 +204,21 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
     # 提交查询请求
     def submit_search_request(self):
         #self.start_page_handle_bak = None
-        self.code_input_box = self.driver.find_element_by_xpath(self.code_input_box_xpath)
-        self.code_submit_button = self.driver.find_element_by_xpath(self.code_submit_button_xpath)
+        self.code_input_box = self.find_element(self.code_input_box_xpath)
+        self.code_submit_button = self.find_element(self.code_submit_button_xpath)
         self.code_input_box.clear()  # 清空输入框
         self.code_input_box.send_keys(self.cur_name)  # 输入查询代码
         #ActionChains(self.driver).key_down(Keys.SHIFT).perform()
         self.code_submit_button.click()
         #ActionChains(self.driver).key_up(Keys.SHIFT).perform()
         #self.start_page_handle_bak = self.driver.window_handles[-1]
-        self.validate_image = self.driver.find_element_by_xpath(self.validate_image_xpath)  # 定位验证码图片
-        self.validate_input_box = self.driver.find_element_by_xpath(self.validate_input_box_xpath)  # 定位验证码输入框
-        self.validate_submit_button = self.driver.find_element_by_xpath(self.validate_submit_button_xpath)  # 定位验证码提交按钮
+        self.validate_image = self.find_element(self.validate_image_xpath)  # 定位验证码图片
+        self.validate_input_box = self.find_element(self.validate_input_box_xpath)  # 定位验证码输入框
+        self.validate_submit_button = self.find_element(self.validate_submit_button_xpath)  # 定位验证码提交按钮
         validate_image_save_path = SysConfig.get_validate_image_save_path()  # 获取验证码保存路径
         for i in range(SysConfig.max_try_times):
             try:
-                self.validate_image = self.driver.find_element_by_xpath(self.validate_image_xpath)  # 定位验证码图片
+                self.validate_image = self.find_element(self.validate_image_xpath)  # 定位验证码图片
                 self.download_validate_image(self.validate_image, validate_image_save_path)  # 截图获取验证码
                 validate_code = self.recognize_validate_code(validate_image_save_path)  # 识别验证码
                 self.validate_input_box.clear()  # 清空验证码输入框
@@ -233,7 +233,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
 
     # 判断IP是否被禁
     def get_ip_status(self):
-        body_text = self.driver.find_element_by_xpath("/html/body").text
+        body_text = self.find_element("/html/body").text
         if body_text.startswith(u'您的访问过于频繁'):
             return False
         else:
@@ -255,7 +255,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
     #     res = 9
     #     if not self.get_ip_status():
     #         return 4
-    #     search_result = self.driver.find_element_by_xpath('/html/body/form/div/div/dl')
+    #     search_result = self.find_element('/html/body/form/div/div/dl')
     #     result_text = search_result.text.strip()
     #     if result_text == '':
     #         logging.info(u'查询结果0条')
@@ -268,7 +268,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
     #         # print 'cur_code:' + self.cur_code
     #         # print 'company_name:'+company_name
     #         # print 'company_abstract:'+company_abstract
-    #         detail_link = self.driver.find_element_by_xpath('/html/body/form/div/div/dl/div/dt/a')
+    #         detail_link = self.find_element('/html/body/form/div/div/dl/div/dt/a')
     #         detail_link.click()
     #         self.detail_page_handle = self.driver.window_handles[-1]
     #         self.driver.close()
@@ -281,11 +281,11 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
     def load_dengji(self):
 
 
-        target_div = self.driver.find_element_by_xpath("//*[@id='jibenxinxi']")
+        target_div = self.find_element("//*[@id='jibenxinxi']")
         #print target_div.text, 'divtext247'
-        table_list = self.driver.find_elements_by_xpath("//*[@id='jibenxinxi']/table")
+        table_list = self.find_elements("//*[@id='jibenxinxi']/table")
 
-        # table_test =self.driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/div[2]/table[3]")
+        # table_test =self.find_element("/html/body/div[2]/div[2]/div/div[2]/table[3]")
         # print table_test.text, u'just for test'
         # table_find_cnt = len(table_find)
         # print table_find_cnt
@@ -302,7 +302,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
                     continue
                 else:
                     # print table_element.text, 'here 266'
-                    # table_desc_element = self.driver.find_element_by_xpath("//*[@id='jibenxinxi']/table[i]/tbody/tr[1]/th[1]")
+                    # table_desc_element = self.find_element("//*[@id='jibenxinxi']/table[i]/tbody/tr[1]/th[1]")
                     # print table_desc_element.text, 'content it is'
                     table_desc = table_element.text.split('\n')[0].strip()
 
@@ -338,7 +338,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
     def load_jiben(self, table_desc):
         jiben_template.delete_from_database(self.cur_code)
 
-        table_element = self.driver.find_element_by_xpath(".//*[@id='jibenxinxi']/table[1]")
+        table_element = self.find_element(".//*[@id='jibenxinxi']/table[1]")
         tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
         values = {}
         # print tr_element_list, u'jiben_tr_list'
@@ -362,18 +362,18 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
 
         gudong_template.delete_from_database(self.cur_code)
 
-        table_element_list = self.driver.find_elements_by_xpath("//*[@id='jibenxinxi']/table")
+        table_element_list = self.find_elements("//*[@id='jibenxinxi']/table")
         for table_element in table_element_list:
             table_if =table_element.find_element_by_xpath('tbody/tr[1]/th').text
-            # table_paginator_if =self.driver.find_element_by_xpath("//*[@id='spaninv2']")
+            # table_paginator_if =self.find_element("//*[@id='spaninv2']")
             # print table_paginator_if,'table_paginator_if335'
             # print table_if,'table if line332'
             if table_if == u"股东信息" or table_if.split('\n')[0]==u"股东（发起人）信息":
                 try:
-                        condition= 'javascript:goPage3' in self.driver.find_element_by_xpath(".//*[@id='ainv2']").get_attribute('href')
+                        condition= 'javascript:goPage3' in self.find_element(".//*[@id='ainv2']").get_attribute('href')
                         # print condition,'MMMMMMMMMMMMMMMayBBBBBBBBBBBBBBBBB545'
                         # try:
-                        #     condition2= 'javascript:goPage3' in self.driver.find_element_by_xpath(".//*[@id='ainv3']").get_attribute('href')
+                        #     condition2= 'javascript:goPage3' in self.find_element(".//*[@id='ainv3']").get_attribute('href')
                         #     if condition2==True:
                         #         rounds=3
                         # except:
@@ -385,7 +385,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
 
 
                 table_th_list = table_element.find_elements_by_xpath('tbody/tr[2]/th')
-                table_td_if = self.driver.find_element_by_xpath("//*[@id='invDiv']")
+                table_td_if = self.find_element("//*[@id='invDiv']")
 
                 # print table_td_if.text, 'Now_Gudong_Message336'
                 if table_td_if.text != u'':
@@ -402,7 +402,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
                                 for handle in self.driver.window_handles:
                                     if handle != self.start_page_handle and handle!=self.detail_page_handle:
                                         self.driver.switch_to.window(handle)
-                                tr_detail_list = self.driver.find_elements_by_xpath("/html/body/div[2]/table/tbody/tr")
+                                tr_detail_list = self.find_elements("/html/body/div[2]/table/tbody/tr")
                                 tr_ele = tr_detail_list[-1]
                                 td_ele_list = tr_ele.find_elements_by_xpath('td')
                                 for td in td_ele_list[1:]:
@@ -418,7 +418,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
                         # values.insert(4,'')
                         gudong_template.insert_into_database(self.cur_code, values)
                     if condition==True:
-                        self.driver.find_element_by_xpath(".//*[@id='ainv2']").click()
+                        self.find_element(".//*[@id='ainv2']").click()
                         time.sleep(0.5)
                         table_td_tr_list = table_td_if.find_elements_by_xpath('table/tbody/tr')
                         for table_tr in table_td_tr_list:
@@ -434,7 +434,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
                                     for handle in self.driver.window_handles:
                                         if handle != self.start_page_handle and handle!=self.detail_page_handle:
                                             self.driver.switch_to.window(handle)
-                                    tr_detail_list = self.driver.find_elements_by_xpath("/html/body/div[2]/table/tbody/tr")
+                                    tr_detail_list = self.find_elements("/html/body/div[2]/table/tbody/tr")
                                     tr_ele = tr_detail_list[-1]
                                     td_ele_list = tr_ele.find_elements_by_xpath('td')
                                     for td in td_ele_list[1:]:
@@ -466,15 +466,15 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
 
 
         # gudong_template.delete_from_database(self.cur_code)
-        # table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+        # table_element = self.find_element("/html/body/table[1]")
         # if len(table_element.find_elements_by_xpath("tbody/tr")) > 2:
-        #     last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+        #     last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
         #     index_element_list_length = int(last_index_element.text.strip())
         #     for i in range(index_element_list_length):
         #         if i > 0:
-        #             index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+        #             index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
         #             index_element.click()
-        #             table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+        #             table_element = self.find_element("/html/body/table[1]")
         #         tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
         #         for tr_element in tr_element_list[2:]:
         #             td_element_list = tr_element.find_elements_by_xpath('td')
@@ -493,7 +493,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
         #             gudong_template.insert_into_database(self.cur_code, values)
     def load_gudong_detail(self):
         # self.driver.switch_to.window(self.driver.window_handles[-1])
-        # td_element_list = self.driver.find_elements_by_xpath("//*[@id='details']/table/tbody/tr[4]/td")
+        # td_element_list = self.find_elements("//*[@id='details']/table/tbody/tr[4]/td")
         # values = []
         # for td in td_element_list[1:]:
         #     values.append(td.text.strip())
@@ -508,10 +508,10 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
         # print 'biangeng'
         biangeng_template.delete_from_database(self.cur_code)
         try:
-            condition= 'javascript:goPage3' in self.driver.find_element_by_xpath(".//*[@id='aalt2']").get_attribute('href')
+            condition= 'javascript:goPage3' in self.find_element(".//*[@id='aalt2']").get_attribute('href')
             # print condition,'MMMMMMMMMMMMMMMayBBBBBBBBBBBBBBBBB545'
             # try:
-            #     condition2= 'javascript:goPage3' in self.driver.find_element_by_xpath(".//*[@id='aalt3']").get_attribute('href')
+            #     condition2= 'javascript:goPage3' in self.find_element(".//*[@id='aalt3']").get_attribute('href')
             #     if condition2==True:
             #         rounds=3
             # except:
@@ -519,13 +519,13 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
             rounds=2
         except:
             condition = False
-        table_element_list = self.driver.find_elements_by_xpath("//*[@id='jibenxinxi']/table")
+        table_element_list = self.find_elements("//*[@id='jibenxinxi']/table")
         for table_element in table_element_list:
             table_if =table_element.find_element_by_xpath('tbody/tr[1]/th').text
             if table_if == u"变更信息":
 
                 table_th_list = table_element.find_elements_by_xpath('tbody/tr[2]/th')
-                table_td_if = self.driver.find_element_by_xpath("//*[@id='altDiv']")
+                table_td_if = self.find_element("//*[@id='altDiv']")
 
                 # print table_td_if.text, 'No biangeng Message357'
                 if table_td_if.text != u'':
@@ -548,7 +548,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
 
                         biangeng_template.insert_into_database(self.cur_code, values)
                     if condition==True:
-                        self.driver.find_element_by_xpath(".//*[@id='aalt2']").click()
+                        self.find_element(".//*[@id='aalt2']").click()
                         time.sleep(0.5)
                         table_td_tr_list = table_td_if.find_elements_by_xpath("table/tbody/tr")
                         # print table_td_tr_list,'405'
@@ -574,7 +574,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
 
     # 加载备案信息
     def load_beian(self):
-        table_list = self.driver.find_elements_by_xpath("//*[@id='beian']/table")
+        table_list = self.find_elements("//*[@id='beian']/table")
 
         for table_element in table_list:
             row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
@@ -610,7 +610,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
     def load_zhuyaorenyuan(self, table_element):
         zhuyaorenyuan_template.delete_from_database(self.cur_code)
 
-        table_element_list = self.driver.find_elements_by_xpath("//*[@id='beian']/table")
+        table_element_list = self.find_elements("//*[@id='beian']/table")
 
         for table_element in table_element_list:
             table_if =table_element.find_element_by_xpath('tbody/tr[1]/th').text
@@ -619,9 +619,9 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
             # print table_if, 'table_if450'
             if table_if == u"主要人员信息":
                 try:
-                    condition= 'javascript:goPage3' in self.driver.find_element_by_xpath(".//*[@id='amem2']").get_attribute('href')
+                    condition= 'javascript:goPage3' in self.find_element(".//*[@id='amem2']").get_attribute('href')
                     # try:
-                    #     condition2= 'javascript:goPage3' in self.driver.find_element_by_xpath(".//*[@id='amem3']").get_attribute('href')
+                    #     condition2= 'javascript:goPage3' in self.find_element(".//*[@id='amem3']").get_attribute('href')
                     #     if condition2==True:
                     #         rounds=3
                     # except:
@@ -632,14 +632,14 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
                     condition = False
 
                 table_th_list = table_element.find_elements_by_xpath('tbody/tr[2]/th')
-                table_td_if = self.driver.find_element_by_xpath("//*[@id='memDiv']")
+                table_td_if = self.find_element("//*[@id='memDiv']")
 
 
                 # print table_td_if.text, 'Now zhuyaorenyuan Message357'
                 if table_td_if.text != u'':
 
 
-                    table_td_if = self.driver.find_element_by_xpath("//*[@id='memDiv']")
+                    table_td_if = self.find_element("//*[@id='memDiv']")
                     table_td_tr_list = table_td_if.find_elements_by_xpath("table/tbody/tr")
 
 
@@ -673,11 +673,11 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
                         # print 'please562~~~~~~~True~~~~~~'
                         # print rounds
                         for cons in range(1,rounds):
-                            # table_td_if = self.driver.find_element_by_xpath("//*[@id='memDiv']")
+                            # table_td_if = self.find_element("//*[@id='memDiv']")
                             # table_td_tr_list = table_td_if.find_elements_by_xpath("table/tbody/tr")
-                            self.driver.find_element_by_xpath('//*[@id="amem2"]').click()
+                            self.find_element('//*[@id="amem2"]').click()
                             time.sleep(0.5)
-                            table_td_if = self.driver.find_element_by_xpath("//*[@id='memDiv']")
+                            table_td_if = self.find_element("//*[@id='memDiv']")
                             table_td_tr_list = table_td_if.find_elements_by_xpath("table/tbody/tr")
                             # print cons,'594roundcircle'
                             for tr_element in table_td_tr_list:
@@ -704,13 +704,13 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
     def load_fenzhijigou(self, table_element):
         fenzhijigou_template.delete_from_database(self.cur_code)
 
-        table_element_list = self.driver.find_elements_by_xpath("//*[@id='beian']/table")
+        table_element_list = self.find_elements("//*[@id='beian']/table")
         for table_element in table_element_list:
             table_if =table_element.find_element_by_xpath('tbody/tr[1]/th').text
             # print table_if, 'table_if494'
             if table_if == u"分支机构信息":
                 table_th_list = table_element.find_elements_by_xpath('tbody/tr[2]/th')
-                table_td_if = self.driver.find_element_by_xpath("//*[@id='childDiv']")
+                table_td_if = self.find_element("//*[@id='childDiv']")
 
                 # print table_td_if.text, 'Now fenzhijigou Message499'
                 if table_td_if.text != u'':
@@ -732,7 +732,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
     # 加载清算信息
     def load_qingsuan(self, table_element):
 
-        table_element_list = self.driver.find_elements_by_xpath("//*[@id='beian']/table")
+        table_element_list = self.find_elements("//*[@id='beian']/table")
         for table_element in table_element_list:
             table_if =table_element.find_element_by_xpath('tbody/tr[1]/th').text
             if table_if == u"清算信息":
@@ -748,22 +748,22 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
     # 加载动产抵押信息
     def load_dongchandiyadengji(self):
         # dongchandiyadengji_template.delete_from_database(self.cur_code)
-        # table_iframe = self.driver.find_element_by_xpath(".//div[@id='dcdy']/iframe")
+        # table_iframe = self.find_element(".//div[@id='dcdy']/iframe")
         # self.driver.switch_to.frame(table_iframe)
-        table_element_if = self.driver.find_element_by_xpath("//*[@id='mortDiv']/table")
+        table_element_if = self.find_element("//*[@id='mortDiv']/table")
         # print table_element_if.text,'dongchandiya'
         if table_element_if.text !='':
             dongchandiyadengji_template.delete_from_database(self.cur_code)
         # table_element = table_element_list[0]
         # row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         # if row_cnt > 2:
-        #     last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+        #     last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
         #     index_element_list_length = int(last_index_element.text.strip())
         #     for i in range(index_element_list_length):
         #         if i > 0:
-        #             index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+        #             index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
         #             index_element.click()
-        #             table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+        #             table_element = self.find_element("/html/body/table[1]")
             tr_element_list = table_element_if.find_elements_by_xpath('tbody/tr')
             for tr_element in tr_element_list:
                 td_element_list = tr_element.find_elements_by_xpath('td')
@@ -779,9 +779,9 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
 
     # 加载股权出质登记信息
     def load_guquanchuzhidengji(self):
-        # # table_iframe = self.driver.find_element_by_xpath(".//div[@id='guquanchuzhi']/iframe")
+        # # table_iframe = self.find_element(".//div[@id='guquanchuzhi']/iframe")
         # # self.driver.switch_to.frame(table_iframe)
-        table_element_if = self.driver.find_element_by_xpath("//*[@id='pledgeDiv']/table")
+        table_element_if = self.find_element("//*[@id='pledgeDiv']/table")
         # print table_element_if.text, 'guquanchuzhi'
         if table_element_if.text !='':
             guquanchuzhidengji_template.delete_from_database(self.cur_code)
@@ -789,13 +789,13 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
         # table_element = table_element_list[0]
         # row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         # if row_cnt > 2:
-        #     last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+        #     last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
         #     index_element_list_length = int(last_index_element.text.strip())
         #     for i in range(index_element_list_length):
         #         if i > 0:
-        #             index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+        #             index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
         #             index_element.click()
-        #             table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+        #             table_element = self.find_element("/html/body/table[1]")
             tr_element_list = table_element_if.find_elements_by_xpath('tbody/tr')
             for tr_element in tr_element_list:
                 td_element_list = tr_element.find_elements_by_xpath('td')
@@ -809,22 +809,22 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
     # 加载行政处罚信息
     def load_xingzhengchufa(self):
 
-        # # table_iframe = self.driver.find_element_by_xpath(".//div[@id='xingzhengchufa']/iframe")
+        # # table_iframe = self.find_element(".//div[@id='xingzhengchufa']/iframe")
         #  #self.driver.switch_to.frame(table_iframe)
-        table_element_if = self.driver.find_element_by_xpath("//*[@id='punDiv']/table")
+        table_element_if = self.find_element("//*[@id='punDiv']/table")
         # print table_element_if.text, 'xingzhengchufa'
         if table_element_if.text !='':
             xingzhengchufa_template.delete_from_database(self.cur_code)
         #  table_element = table_element_list[0]
         #  row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         #  if row_cnt > 2:
-        #      last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+        #      last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
         #      index_element_list_length = int(last_index_element.text.strip())
         #      for i in range(index_element_list_length):
         #          if i > 0:
-        #              index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+        #              index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
         #              index_element.click()
-        #              table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+        #              table_element = self.find_element("/html/body/table[1]")
             tr_element_list = table_element_if.find_elements_by_xpath('tbody/tr')
             for tr_element in tr_element_list:
                 td_element_list = tr_element.find_elements_by_xpath('td')
@@ -838,22 +838,22 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
     # 加载经营异常信息
     def load_jingyingyichang(self):
 
-        # table_iframe = self.driver.find_element_by_xpath(".//div[@id='jyyc']/iframe")
+        # table_iframe = self.find_element(".//div[@id='jyyc']/iframe")
         # self.driver.switch_to.frame(table_iframe)
-        table_element_if = self.driver.find_element_by_xpath("//*[@id='excDiv']/table")
+        table_element_if = self.find_element("//*[@id='excDiv']/table")
         # print table_element_if.text,'jingyingyichang'
         if table_element_if.text !='':
             jingyingyichang_template.delete_from_database(self.cur_code)
         # table_element = table_element_list[0]
         # row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         # if row_cnt > 2:
-        #     last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+        #     last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
         #     index_element_list_length = int(last_index_element.text.strip())
         #     for i in range(index_element_list_length):
         #         if i > 0:
-        #             index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+        #             index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
         #             index_element.click()
-        #             table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+        #             table_element = self.find_element("/html/body/table[1]")
             tr_element_list = table_element_if.find_elements_by_xpath('tbody/tr')
             for tr_element in tr_element_list:
                 td_element_list = tr_element.find_elements_by_xpath('td')
@@ -867,22 +867,22 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
     # 加载严重违法信息
     def load_yanzhongweifa(self):
 
-        # table_iframe = self.driver.find_element_by_xpath(".//div[@id='yzwf']/iframe")
+        # table_iframe = self.find_element(".//div[@id='yzwf']/iframe")
         # self.driver.switch_to.frame(table_iframe)
-        table_element_if = self.driver.find_element_by_xpath("//*[@id='serillDiv']/table")
+        table_element_if = self.find_element("//*[@id='serillDiv']/table")
         # print table_element_if.text,'yanzhongweifa'
         if table_element_if.text !='':
             yanzhongweifa_template.delete_from_database(self.cur_code)
         # table_element = table_element_list[0]
         # row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         # if row_cnt > 2:
-        #     last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+        #     last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
         #     index_element_list_length = int(last_index_element.text.strip())
         #     for i in range(index_element_list_length):
         #         if i > 0:
-        #             index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+        #             index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
         #             index_element.click()
-        #             table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+        #             table_element = self.find_element("/html/body/table[1]")
             tr_element_list = table_element_if.find_elements_by_xpath('tbody/tr')
             for tr_element in tr_element_list:
                 td_element_list = tr_element.find_elements_by_xpath('td')
@@ -896,22 +896,22 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
     # 加载抽查检查信息
     def load_chouchajiancha(self):
 
-        # table_iframe = self.driver.find_element_by_xpath(".//div[@id='ccjc']/iframe")
+        # table_iframe = self.find_element(".//div[@id='ccjc']/iframe")
         # self.driver.switch_to.frame(table_iframe)
-        table_element_if = self.driver.find_element_by_xpath("//*[@id='spotCheckDiv']/table")
+        table_element_if = self.find_element("//*[@id='spotCheckDiv']/table")
         # print table_element_if.text, 'chouchajiancha'
         if table_element_if.text !='':
             chouchajiancha_template.delete_from_database(self.cur_code)
         # table_element = table_element_list[0]
         # row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         # if row_cnt > 2:
-        #     last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+        #     last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
         #     index_element_list_length = int(last_index_element.text.strip())
         #     for i in range(index_element_list_length):
         #         if i > 0:
-        #             index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+        #             index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
         #             index_element.click()
-        #             table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+        #             table_element = self.find_element("/html/body/table[1]")
             tr_element_list = table_element_if.find_elements_by_xpath('tbody/tr')
             for tr_element in tr_element_list:
                 td_element_list = tr_element.find_elements_by_xpath('td')

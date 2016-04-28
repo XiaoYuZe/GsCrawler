@@ -145,6 +145,14 @@ class Searcher(object):
     def find_element(self, xpath,  time_out=SysConfig.element_locate_timeout):
         return WebDriverWait(self.driver, time_out).\
             until(expected_conditions.presence_of_element_located((By.XPATH, xpath)))
+    def find_elements(self,  xpath,  time_out=SysConfig.element_locate_timeout):
+        """
+        :param xpath: xpath字符串
+        :param seconds: 最大等待时长，整型
+        :return: 定位到的web_element列表，List
+        """
+        self.find_element(xpath,  time_out)
+        return self.driver.find_elements_by_xpath(xpath)
 
     # 下载登记信息
     def load_dengji(self):
