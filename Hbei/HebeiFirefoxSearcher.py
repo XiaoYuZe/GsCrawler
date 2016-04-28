@@ -257,7 +257,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
             self.driver.get(self.start_url)
             self.start_page_handle = self.driver.current_window_handle
         except common.exceptions.TimeoutException:
-            pass
+            load_result = False
         return load_result
 
     # 进入详情页 返回int型 {0：查询无结果，1：查询有结果且进入成功，4：IP被禁，9：进入失败}
@@ -757,8 +757,8 @@ if __name__ == '__main__':
     # searcher.set_config()
     #
     # if searcher.build_driver() == 0:
-    #     searcher.search(u"河北隆西石膏有限公司", u'石家庄市桥西区世纪缘食品商行',u'南和县供销社金丰农资有限公司')
-    name_list = [u"邯郸市名人坊陶瓷文化有限公司"]
+    #     searcher.search(u"河北隆西石膏有限公司", u'石家庄市桥西区世纪缘食品商行',u'南和县供销社金丰农资有限公司',u"邯郸市名人坊陶瓷文化有限公司")
+    name_list = [u"青县创新蔬菜合作社"]
     searcher = HebeiFirefoxSearcher()
     searcher.set_config()
     for name in name_list:
