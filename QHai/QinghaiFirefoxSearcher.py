@@ -810,6 +810,8 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
                 for td in td_element_list:
                     val = td.text.strip()
                     values.append(val)
+                if len(values) > 5:
+                    values.pop(-2)
                 xingzhengchufa_template.insert_into_database(self.cur_code, values)
         self.driver.switch_to.default_content()
 
@@ -902,7 +904,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
 
 if __name__ == '__main__':
 
-    name_list = [u'大通宏运建材有限公司']
+    name_list = [u'西宁朵云轩典藏商贸有限公司']
     searcher = QingHaiFirefoxSearcher()
     searcher.set_config()
     for name in name_list:
