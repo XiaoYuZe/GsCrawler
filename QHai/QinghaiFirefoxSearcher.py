@@ -701,8 +701,13 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
                 table_td_list = table_tr.text.split(' ')
 
                 for table_td in table_td_list:
-                    # print table_td,'fenzhijigou509'
-                    values.append(table_td.strip())
+                    print table_td,'fenzhijigou509'
+                    if table_td == u' ':
+                        values.append(u' ')
+                    else:
+                        values.append(table_td.strip())
+                if len(values) > 4:
+                    values.pop(2)
 
                 fenzhijigou_template.insert_into_database(self.cur_code, values)
         # print '~~514~~'
@@ -904,7 +909,7 @@ class QingHaiFirefoxSearcher(FirefoxSearcher):
 
 if __name__ == '__main__':
 
-    name_list = [u'西宁朵云轩典藏商贸有限公司']
+    name_list = [u'青海邦业工贸有限公司']
     searcher = QingHaiFirefoxSearcher()
     searcher.set_config()
     for name in name_list:
