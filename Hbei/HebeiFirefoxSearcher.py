@@ -526,7 +526,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
                 for i in range(fixed_length):
                     val = td_element_list[i].text.strip()
                     values.append(val)
-                    if len(values) == 3:
+                    if len(values) == 3 and values[2] != u'':
                         zhuyaorenyuan_template.insert_into_database(self.cur_code, values)
                         values = []
             if condition==True:
@@ -544,7 +544,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
                         for i in range(fixed_length):
                             val = td_element_list[i].text.strip()
                             values.append(val)
-                            if len(values) == 3:
+                            if len(values) == 3 and values[2] != u'':
                                 zhuyaorenyuan_template.insert_into_database(self.cur_code, values)
                                 values = []
                     i += 1
@@ -758,7 +758,7 @@ if __name__ == '__main__':
     #
     # if searcher.build_driver() == 0:
     #     searcher.search(u"河北隆西石膏有限公司", u'石家庄市桥西区世纪缘食品商行',u'南和县供销社金丰农资有限公司',u"邯郸市名人坊陶瓷文化有限公司")
-    name_list = [u"青县创新蔬菜合作社"]
+    name_list = [u"平乡县亿恒电动车配件有限公司"]
     searcher = HebeiFirefoxSearcher()
     searcher.set_config()
     for name in name_list:
