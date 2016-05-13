@@ -14,6 +14,7 @@ from selenium.webdriver.common.keys import Keys
 from template.logger import *
 import traceback
 from selenium import webdriver
+import time
 
 
 class NingXiaFirefoxSearcher(FirefoxSearcher):
@@ -29,8 +30,6 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
         gudong_template.column_list = ['Shareholder_Type', 'Shareholder_Name', 'Shareholder_CertificationType', 'Shareholder_CertificationNo', 'Shareholder_Details',
                                'Subscripted_Capital', 'ActualPaid_Capital', 'Subscripted_Method', 'Subscripted_Amount', 'Subscripted_Time', 'ActualPaid_Method',
                                'ActualPaid_Amount', 'ActualPaid_Time']
-        gudong_template.column_list.remove('Shareholder_Details')
-
 
     # 配置页面元素xpath与浏览器插件
     def set_config(self):
@@ -41,11 +40,12 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
         self.validate_input_box_xpath = '/html/body/div[2]/div/div/ul/li[3]/div[2]/input'
         self.validate_submit_button_xpath = '/html/body/div[2]/div/div/ul/li[4]/a'
         self.tab_list_xpath = '/html/body/div[2]/div[2]/div/div[1]/ul/li'
-        self.plugin_path = os.path.join(sys.path[0], r'..\ocr\ningxia.bat')
+        self.plugin_path = os.path.join(sys.path[0], r'..\ocr\ningxia\ningxia.bat')
         self.province = u'宁夏回族自治区'
 
     def build_driver(self):
         build_result = 0
+        print SysConfig.get_firefox_profile_path()
         profile = webdriver.FirefoxProfile(SysConfig.get_firefox_profile_path())
         self.driver = webdriver.Firefox(firefox_profile=profile)
         self.set_timeout_config()
@@ -69,12 +69,12 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
                 self.submit_search_request()
                 self.get_search_result()
                 if self.search_model.update_status == 1:
-                    result_list = self.driver.find_elements_by_xpath("/html/body/form/div/div/dl/div")
+                    result_list = self.find_elements("/html/body/form/div/div/dl/div")
                     for result in result_list:
                         self.driver.execute_script("arguments[0].style=''", result)
                         org_name = result.find_element_by_xpath("dt/a").text
                         self.cur_code = result.find_element_by_xpath("dd/span").text
-                        print org_name, self.cur_code
+                        # print org_name, self.cur_code
                         self.result_model = DataModel(org_name, self.province)
 
                         sql_1 = "select EnterpriseName from Registered_Info where RegistrationNo='%s'" % org_name
@@ -131,8 +131,7 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
     def get_search_result(self):
         if not self.get_ip_status():
             return 4
-
-        search_result = self.driver.find_element_by_xpath('/html/body/form/div/div/dl')
+        search_result = self.find_element('/html/body/form/div/div/dl')
         result_text = search_result.text.strip()
         if result_text == '':
             logging.info(u'查询结果0条')
@@ -143,24 +142,25 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
     # 提交查询请求
     def submit_search_request(self):
         self.start_page_handle_bak = None
-        self.code_input_box = self.driver.find_element_by_xpath(self.code_input_box_xpath)
-        self.code_submit_button = self.driver.find_element_by_xpath(self.code_submit_button_xpath)
+        self.code_input_box = self.find_element(self.code_input_box_xpath)
+        self.code_submit_button = self.find_element(self.code_submit_button_xpath)
         self.code_input_box.clear()  # 清空输入框
         self.code_input_box.send_keys(self.cur_name)  # 输入查询代码
         ActionChains(self.driver).key_down(Keys.SHIFT).perform()
         self.code_submit_button.click()
         ActionChains(self.driver).key_up(Keys.SHIFT).perform()
         self.start_page_handle_bak = self.driver.window_handles[-1]
-        self.validate_image = self.driver.find_element_by_xpath(self.validate_image_xpath)  # 定位验证码图片
-        self.validate_input_box = self.driver.find_element_by_xpath(self.validate_input_box_xpath)  # 定位验证码输入框
-        self.validate_submit_button = self.driver.find_element_by_xpath(self.validate_submit_button_xpath)  # 定位验证码提交按钮
+        self.validate_image = self.find_element(self.validate_image_xpath)  # 定位验证码图片
+        self.validate_input_box = self.find_element(self.validate_input_box_xpath)  # 定位验证码输入框
+        self.validate_submit_button = self.find_element(self.validate_submit_button_xpath)  # 定位验证码提交按钮
         validate_image_save_path = SysConfig.get_validate_image_save_path()  # 获取验证码保存路径
         for i in range(SysConfig.max_try_times):
             try:
-                self.validate_image = self.driver.find_element_by_xpath(self.validate_image_xpath)  # 定位验证码图片
+                self.validate_image = self.find_element(self.validate_image_xpath)  # 定位验证码图片
                 self.download_validate_image(self.validate_image, validate_image_save_path)  # 截图获取验证码
                 validate_code = self.recognize_validate_code(validate_image_save_path)  # 识别验证码
                 self.validate_input_box.clear()  # 清空验证码输入框
+                self.validate_submit_button = self.driver.find_element_by_xpath(self.validate_submit_button_xpath)
                 self.validate_input_box.send_keys(validate_code)  # 输入验证码
                 self.validate_submit_button.click()  # 点击搜索（验证码弹窗）
                 self.driver.switch_to.alert.accept()
@@ -171,8 +171,10 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
 
     # 判断IP是否被禁
     def get_ip_status(self):
-        body_text = self.driver.find_element_by_xpath("/html/body").text
+
+        body_text = self.find_element("/htm/body").text
         if body_text.startswith(u'您的访问过于频繁'):
+            print u'IP被封,切换VPN'
             return False
         else:
             return True
@@ -184,7 +186,7 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
             self.driver.get(self.start_url)
             self.start_page_handle = self.driver.current_window_handle
         except common.exceptions.TimeoutException:
-            pass
+            load_result = False
         return load_result
 
     # 进入详情页 返回int型 {0：查询无结果，1：查询有结果且进入成功，4：IP被禁，9：进入失败}
@@ -192,7 +194,7 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
     #     res = 9
     #     if not self.get_ip_status():
     #         return 4
-    #     search_result = self.driver.find_element_by_xpath('/html/body/form/div/div/dl')
+    #     search_result = self.find_element('/html/body/form/div/div/dl')
     #     result_text = search_result.text.strip()
     #     if result_text == '':
     #         logging.info(u'查询结果0条')
@@ -205,7 +207,7 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
     #         # print 'cur_code:' + self.cur_code
     #         # print 'company_name:'+company_name
     #         # print 'company_abstract:'+company_abstract
-    #         detail_link = self.driver.find_element_by_xpath('/html/body/form/div/div/dl/div/dt/a')
+    #         detail_link = self.find_element('/html/body/form/div/div/dl/div/dt/a')
     #         detail_link.click()
     #         self.detail_page_handle = self.driver.window_handles[-1]
     #         self.driver.close()
@@ -216,10 +218,10 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
 
     # 加载登记信息
     def load_dengji(self):
-        table_iframe_list = self.driver.find_elements_by_xpath(".//div[@id='jibenxinxi']/iframe")
+        table_iframe_list = self.find_elements(".//div[@id='jibenxinxi']/iframe")
         for table_iframe in table_iframe_list:
             self.driver.switch_to.frame(table_iframe)
-            table_element_list = self.driver.find_elements_by_xpath("/html/body/table")
+            table_element_list = self.find_elements("/html/body/table")
             table_element = table_element_list[0]
             table_desc_element = table_element.find_element_by_xpath("tbody/tr/th")
             table_desc = table_desc_element.text.split('\n')[0].strip()
@@ -233,7 +235,7 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
     # 加载基本信息
     def load_jiben(self, table_iframe):
         jiben_template.delete_from_database(self.cur_code)
-        table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+        table_element = self.find_element("/html/body/table[1]")
         tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
         values = {}
         for tr_element in tr_element_list[1:]:
@@ -251,15 +253,15 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
     # 加载股东信息
     def load_gudong(self, table_iframe):
         gudong_template.delete_from_database(self.cur_code)
-        table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+        table_element = self.find_element("/html/body/table[1]")
         if len(table_element.find_elements_by_xpath("tbody/tr")) > 2:
-            last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+            last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
             index_element_list_length = int(last_index_element.text.strip())
             for i in range(index_element_list_length):
                 if i > 0:
-                    index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+                    index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
                     index_element.click()
-                    table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+                    table_element = self.find_element("/html/body/table[1]")
                 tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
                 for tr_element in tr_element_list[2:]:
                     td_element_list = tr_element.find_elements_by_xpath('td')
@@ -267,7 +269,7 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
                     for td in td_element_list:
                         val = td.text.strip()
                         if val == u'详情':
-                            # values.append(td.find_element_by_xpath('a').get_attribute('href'))
+                            values.append(td.find_element_by_xpath('a').get_attribute('href'))
                             td.find_element_by_xpath('a').click()
                             values.extend(self.load_gudong_detail())
                             self.driver.switch_to.frame(table_iframe)
@@ -278,7 +280,7 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
 
     def load_gudong_detail(self):
         self.driver.switch_to.window(self.driver.window_handles[-1])
-        td_element_list = self.driver.find_elements_by_xpath("/html/body/div[2]/div/table/tbody/tr[4]/td")
+        td_element_list = self.find_elements("/html/body/div[2]/div/table/tbody/tr[4]/td")
         values = []
         for td in td_element_list[1:]:
             values.append(td.text.strip())
@@ -289,15 +291,15 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
     # 加载变更信息
     def load_biangeng(self, table_iframe):
         biangeng_template.delete_from_database(self.cur_code)
-        table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+        table_element = self.find_element("/html/body/table[1]")
         if len(table_element.find_elements_by_xpath("tbody/tr")) > 2:
-            last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+            last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
             index_element_list_length = int(last_index_element.text.strip())
             for i in range(index_element_list_length):
                 if i > 0:
-                    index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+                    index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
                     index_element.click()
-                    table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+                    table_element = self.find_element("/html/body/table[1]")
                 tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
                 for tr_element in tr_element_list[2:]:
                     td_element_list = tr_element.find_elements_by_xpath('td')
@@ -312,10 +314,10 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
 
     # 加载变更信息
     def load_beian(self):
-        table_iframe_list = self.driver.find_elements_by_xpath(".//div[@id='beian']/iframe")
+        table_iframe_list = self.find_elements(".//div[@id='beian']/iframe")
         for table_iframe in table_iframe_list:
             self.driver.switch_to.frame(table_iframe)
-            table_element_list = self.driver.find_elements_by_xpath("/html/body/table")
+            table_element_list = self.find_elements("/html/body/table")
             table_element = table_element_list[0]
             table_desc_element = table_element.find_element_by_xpath("tbody/tr/th")
             table_desc = table_desc_element.text.split('\n')[0].strip()
@@ -329,15 +331,15 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
     # 加载主要人员信息
     def load_zhuyaorenyuan(self, table_iframe):
         zhuyaorenyuan_template.delete_from_database(self.cur_code)
-        table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+        table_element = self.find_element("/html/body/table[1]")
         if len(table_element.find_elements_by_xpath("tbody/tr")) > 2:
-            last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+            last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
             index_element_list_length = int(last_index_element.text.strip())
             for i in range(index_element_list_length):
                 if i > 0:
-                    index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+                    index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
                     index_element.click()
-                    table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+                    table_element = self.find_element("/html/body/table[1]")
                 tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
                 for tr_element in tr_element_list[2:]:
                     values = []
@@ -354,15 +356,15 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
     # 加载分支机构信息
     def load_fenzhijigou(self, table_iframe):
         fenzhijigou_template.delete_from_database(self.cur_code)
-        table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+        table_element = self.find_element("/html/body/table[1]")
         if len(table_element.find_elements_by_xpath("tbody/tr")) > 2:
-            last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+            last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
             index_element_list_length = int(last_index_element.text.strip())
             for i in range(index_element_list_length):
                 if i > 0:
-                    index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+                    index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
                     index_element.click()
-                    table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+                    table_element = self.find_element("/html/body/table[1]")
                 tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
                 for tr_element in tr_element_list[2:]:
                     td_element_list = tr_element.find_elements_by_xpath('td')
@@ -374,7 +376,7 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
 
     # 加载清算信息
     def load_qingsuan(self, table_iframe):
-        table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+        table_element = self.find_element("/html/body/table[1]")
         val_1 = table_element.find_element_by_xpath('tbody/tr[2]/td').text.strip()
         val_2 = table_element.find_element_by_xpath('tbody/tr[3]/td').text.strip()
         values = [val_1, val_2]
@@ -385,19 +387,19 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
     # 加载动产抵押信息
     def load_dongchandiyadengji(self):
         dongchandiyadengji_template.delete_from_database(self.cur_code)
-        table_iframe = self.driver.find_element_by_xpath(".//div[@id='dcdy']/iframe")
+        table_iframe = self.find_element(".//div[@id='dcdy']/iframe")
         self.driver.switch_to.frame(table_iframe)
-        table_element_list = self.driver.find_elements_by_xpath("/html/body/table")
+        table_element_list = self.find_elements("/html/body/table")
         table_element = table_element_list[0]
         row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         if row_cnt > 2:
-            last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+            last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
             index_element_list_length = int(last_index_element.text.strip())
             for i in range(index_element_list_length):
                 if i > 0:
-                    index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+                    index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
                     index_element.click()
-                    table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+                    table_element = self.find_element("/html/body/table[1]")
                 tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
                 for tr_element in tr_element_list[2:]:
                     td_element_list = tr_element.find_elements_by_xpath('td')
@@ -414,19 +416,19 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
     # 加载股权出质登记信息
     def load_guquanchuzhidengji(self):
         guquanchuzhidengji_template.delete_from_database(self.cur_code)
-        table_iframe = self.driver.find_element_by_xpath(".//div[@id='guquanchuzhi']/iframe")
+        table_iframe = self.find_element(".//div[@id='guquanchuzhi']/iframe")
         self.driver.switch_to.frame(table_iframe)
-        table_element_list = self.driver.find_elements_by_xpath("/html/body/table")
+        table_element_list = self.find_elements("/html/body/table")
         table_element = table_element_list[0]
         row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         if row_cnt > 2:
-            last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+            last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
             index_element_list_length = int(last_index_element.text.strip())
             for i in range(index_element_list_length):
                 if i > 0:
-                    index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+                    index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
                     index_element.click()
-                    table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+                    table_element = self.find_element("/html/body/table[1]")
                 tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
                 for tr_element in tr_element_list[2:]:
                     td_element_list = tr_element.find_elements_by_xpath('td')
@@ -440,19 +442,19 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
     # 加载行政处罚信息
     def load_xingzhengchufa(self):
         xingzhengchufa_template.delete_from_database(self.cur_code)
-        table_iframe = self.driver.find_element_by_xpath(".//div[@id='xingzhengchufa']/iframe")
+        table_iframe = self.find_element(".//div[@id='xingzhengchufa']/iframe")
         self.driver.switch_to.frame(table_iframe)
-        table_element_list = self.driver.find_elements_by_xpath("/html/body/table")
+        table_element_list = self.find_elements("/html/body/table")
         table_element = table_element_list[0]
         row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         if row_cnt > 2:
-            last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+            last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
             index_element_list_length = int(last_index_element.text.strip())
             for i in range(index_element_list_length):
                 if i > 0:
-                    index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+                    index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
                     index_element.click()
-                    table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+                    table_element = self.find_element("/html/body/table[1]")
                 tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
                 for tr_element in tr_element_list[2:]:
                     td_element_list = tr_element.find_elements_by_xpath('td')
@@ -466,19 +468,19 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
     # 加载经营异常信息
     def load_jingyingyichang(self):
         jingyingyichang_template.delete_from_database(self.cur_code)
-        table_iframe = self.driver.find_element_by_xpath(".//div[@id='jyyc']/iframe")
+        table_iframe = self.find_element(".//div[@id='jyyc']/iframe")
         self.driver.switch_to.frame(table_iframe)
-        table_element_list = self.driver.find_elements_by_xpath("/html/body/table")
+        table_element_list = self.find_elements("/html/body/table")
         table_element = table_element_list[0]
         row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         if row_cnt > 2:
-            last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+            last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
             index_element_list_length = int(last_index_element.text.strip())
             for i in range(index_element_list_length):
                 if i > 0:
-                    index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+                    index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
                     index_element.click()
-                    table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+                    table_element = self.find_element("/html/body/table[1]")
                 tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
                 for tr_element in tr_element_list[2:]:
                     td_element_list = tr_element.find_elements_by_xpath('td')
@@ -492,19 +494,19 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
     # 加载原种违法信息
     def load_yanzhongweifa(self):
         yanzhongweifa_template.delete_from_database(self.cur_code)
-        table_iframe = self.driver.find_element_by_xpath(".//div[@id='yzwf']/iframe")
+        table_iframe = self.find_element(".//div[@id='yzwf']/iframe")
         self.driver.switch_to.frame(table_iframe)
-        table_element_list = self.driver.find_elements_by_xpath("/html/body/table")
+        table_element_list = self.find_elements("/html/body/table")
         table_element = table_element_list[0]
         row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         if row_cnt > 2:
-            last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+            last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
             index_element_list_length = int(last_index_element.text.strip())
             for i in range(index_element_list_length):
                 if i > 0:
-                    index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+                    index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
                     index_element.click()
-                    table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+                    table_element = self.find_element("/html/body/table[1]")
                 tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
                 for tr_element in tr_element_list[2:]:
                     td_element_list = tr_element.find_elements_by_xpath('td')
@@ -518,19 +520,19 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
     # 加载抽查检查信息
     def load_chouchajiancha(self):
         chouchajiancha_template.delete_from_database(self.cur_code)
-        table_iframe = self.driver.find_element_by_xpath(".//div[@id='ccjc']/iframe")
+        table_iframe = self.find_element(".//div[@id='ccjc']/iframe")
         self.driver.switch_to.frame(table_iframe)
-        table_element_list = self.driver.find_elements_by_xpath("/html/body/table")
+        table_element_list = self.find_elements("/html/body/table")
         table_element = table_element_list[0]
         row_cnt = len(table_element.find_elements_by_xpath("tbody/tr"))
         if row_cnt > 2:
-            last_index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[last()-1]')
+            last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
             index_element_list_length = int(last_index_element.text.strip())
             for i in range(index_element_list_length):
                 if i > 0:
-                    index_element = self.driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
+                    index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
                     index_element.click()
-                    table_element = self.driver.find_element_by_xpath("/html/body/table[1]")
+                    table_element = self.find_element("/html/body/table[1]")
                 tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
                 for tr_element in tr_element_list[2:]:
                     td_element_list = tr_element.find_elements_by_xpath('td')

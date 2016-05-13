@@ -26,11 +26,6 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
         self.detail_page_handle = None
         self.search_model = None
         self.result_model = None
-        gudong_template.column_list = ['Shareholder_Type', 'Shareholder_Name', 'Shareholder_CertificationType', 'Shareholder_CertificationNo', 'Shareholder_Details',
-                               'Subscripted_Capital', 'ActualPaid_Capital', 'Subscripted_Method', 'Subscripted_Amount', 'Subscripted_Time', 'ActualPaid_Method',
-                               'ActualPaid_Amount', 'ActualPaid_Time']
-        gudong_template.column_list.remove('Shareholder_Details')
-
 
     # ≈‰÷√“≥√Ê‘™Àÿxpath”Î‰Ø¿¿∆˜≤Âº˛
     def set_config(self):
@@ -46,7 +41,7 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
 
     def build_driver(self):
         build_result = 0
-        profile = webdriver.FirefoxProfile(SysConfig.get_firefox_profile_path())
+        profile = webdriver.FirefoxProfile()
         self.driver = webdriver.Firefox(firefox_profile=profile)
         self.set_timeout_config()
         for i in xrange(SysConfig.max_try_times):
@@ -74,7 +69,7 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
                         self.driver.execute_script("arguments[0].style=''", result)
                         org_name = result.find_element_by_xpath("dt/a").text
                         self.cur_code = result.find_element_by_xpath("dd/span").text
-                        print org_name, self.cur_code
+                        # print org_name, self.cur_code
                         self.result_model = DataModel(org_name, self.province)
 
                         sql_1 = "select EnterpriseName from Registered_Info where RegistrationNo='%s'" % org_name
@@ -267,7 +262,7 @@ class NingXiaFirefoxSearcher(FirefoxSearcher):
                     for td in td_element_list:
                         val = td.text.strip()
                         if val == u'œÍ«È':
-                            # values.append(td.find_element_by_xpath('a').get_attribute('href'))
+                            values.append(td.find_element_by_xpath('a').get_attribute('href'))
                             td.find_element_by_xpath('a').click()
                             values.extend(self.load_gudong_detail())
                             self.driver.switch_to.frame(table_iframe)

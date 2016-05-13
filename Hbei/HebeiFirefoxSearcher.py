@@ -354,16 +354,6 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
             except:
                 pass
 
-
-                # index_element_list_length = int(last_index_element.text.strip())
-
-
-
-            # for i in range(index_element_list_length):
-            #     if i > 0:
-            #         index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
-            #         index_element.click()
-            #         table_element = self.find_element("/html/body/table[1]")
             tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
             for tr_element in tr_element_list[2:(len(tr_element_list)-1)]:
                 td_element_list = tr_element.find_elements_by_xpath('td')
@@ -380,8 +370,7 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
                 values.extend((len(gudong_template.column_list) - len(values))*[''])
                 gudong_template.insert_into_database(self.cur_code, values)
             if condition == True:
-                # print u'啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊'
-                i=3
+                i = 3
                 while i <= len(last_index_element)-1:
                     table_element.find_element_by_xpath("tbody/tr[last()]/th/ul/li[%d]/a" %i).click()
                     # time.sleep(0.5)
@@ -433,29 +422,36 @@ class HebeiFirefoxSearcher(FirefoxSearcher):
                 if len(last_index_element)>3:
                     condition = True
             except:
-                pass
-            # last_index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[last()-1]')
-            # index_element_list_length = int(last_index_element.text.strip())
-            # for i in range(index_element_list_length):
-            #     if i > 0:
-            #         index_element = self.find_element('/html/body/table[2]/tbody/tr/th/a[%d]' % (i+1))
-            #         index_element.click()
-            #         table_element = self.find_element("/html/body/table[1]")
-            tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
-            for tr_element in tr_element_list[2:(len(tr_element_list)-1)]:
-                td_element_list = tr_element.find_elements_by_xpath('td')
-                values = []
-                for td in td_element_list:
-                    val = td.text.strip()
-                    if val.endswith(u'更多'):
-                        td.find_element_by_xpath('a').click()
+                condition = False
+            if condition == False:
+                tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
+                for tr_element in tr_element_list[2:(len(tr_element_list)-1)]:
+                    td_element_list = tr_element.find_elements_by_xpath('td')
+                    values = []
+                    for td in td_element_list:
                         val = td.text.strip()
-                        values.append(val[:-4].strip())
-                    else:
-                        values.append(val.strip())
-                biangeng_template.insert_into_database(self.cur_code, values)
-            if condition== True:
+                        if val.endswith(u'更多'):
+                            td.find_element_by_xpath('a').click()
+                            val = td.text.strip()
+                            values.append(val[:-4].strip())
+                        else:
+                            values.append(val.strip())
+                    biangeng_template.insert_into_database(self.cur_code, values)
+            if condition == True:
                 # print u'不不不不不不不不不不不不不不不', len(last_index_element)
+                tr_element_list = table_element.find_elements_by_xpath('tbody/tr')
+                for tr_element in tr_element_list[2:7]:
+                    td_element_list = tr_element.find_elements_by_xpath('td')
+                    values = []
+                    for td in td_element_list:
+                        val = td.text.strip()
+                        if val.endswith(u'更多'):
+                            td.find_element_by_xpath('a').click()
+                            val = td.text.strip()
+                            values.append(val[:-4].strip())
+                        else:
+                            values.append(val.strip())
+                    biangeng_template.insert_into_database(self.cur_code, values)
                 i=3
                 while i <= len(last_index_element)-1:
                     table_element.find_element_by_xpath("tbody/tr[last()]/th/ul/li[%d]/a" %i).click()
@@ -757,8 +753,8 @@ if __name__ == '__main__':
     # searcher.set_config()
     #
     # if searcher.build_driver() == 0:
-    #     searcher.search(u"河北隆西石膏有限公司", u'石家庄市桥西区世纪缘食品商行',u'南和县供销社金丰农资有限公司',u"邯郸市名人坊陶瓷文化有限公司")
-    name_list = [u"平乡县亿恒电动车配件有限公司"]
+    #     searcher.search(u石家庄市藁城区医药药材世纪连锁有限公司",u"河北隆西石膏有限公司", u'石家庄市桥西区世纪缘食品商行',u'南和县供销社金丰农资有限公司',u"邯郸市名人坊陶瓷文化有限公司")
+    name_list = [u"河北泰华实业集团有限公司"]
     searcher = HebeiFirefoxSearcher()
     searcher.set_config()
     for name in name_list:
